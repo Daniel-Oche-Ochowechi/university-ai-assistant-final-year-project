@@ -6,7 +6,7 @@ import { search } from "duck-duck-scrape";
 export const runtime = "nodejs";
 
 export async function GET() {
-    return Response.json({ status: "API is active", model: "Hybrid (Kimi-K2-Thinking / GPT-4o Vision)" });
+    return Response.json({ status: "API is active", model: "Kimi-K2-Thinking" });
 }
 
 export async function POST(req: Request) {
@@ -16,11 +16,6 @@ export async function POST(req: Request) {
         if (!messages || messages.length === 0) {
             return Response.json({ error: "Messages are required" }, { status: 400 });
         }
-
-        // Check if the conversation has any images uploaded to enable Vision mode
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const hasImage = messages.some((m: any) => m.imageUrl);
-        const targetModel = hasImage ? "gpt-4o" : "moonshotai/kimi-k2-thinking";
 
         // 1. RAG — Vector Search for relevant documents
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,7 +47,7 @@ export async function POST(req: Request) {
             webContext ? `\n## Live Web Results\n${webContext}` : "",
         ].join("\n");
 
-        // Format messages. If using Vision, convert imageURL to the OpenAI format
+        // Format messages. If imageUrl is present, wrap it for mutlimodal processing on Kimi.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const apiMessages: any[] = [
             { role: "system", content: systemContent },
@@ -71,12 +66,12 @@ export async function POST(req: Request) {
             })
         ];
 
-        // 3. Call OpenAI (or Kimi-K2 if no image)
+        // 3. Call OpenAI using Kimi model strictly
         const stream = await openai.chat.completions.create({
-            model: targetModel,
+            model: "moonshotai/kimi-k2-thinking",
             messages: apiMessages,
-            temperature: 0.7, // Lower text temp for gpt-4o, kimi was 1
-            max_tokens: 4000,
+            temperature: 1,
+            max_tokens: 16384,
             stream: true,
         });
 
@@ -94,7 +89,6 @@ export async function POST(req: Request) {
                             reasoning_content?: string;
                         };
 
-                        // Stream reasoning (thinking) tokens prefixed with a special marker
                         const reasoning = delta?.reasoning_content;
                         if (reasoning) {
                             if (!isThinking) {
@@ -104,7 +98,6 @@ export async function POST(req: Request) {
                             controller.enqueue(encoder.encode(reasoning));
                         }
 
-                        // When the final answer content starts, close the thinking block
                         if (delta?.content) {
                             if (isThinking) {
                                 controller.enqueue(encoder.encode("__THINKING_END__"));
@@ -114,7 +107,6 @@ export async function POST(req: Request) {
                         }
                     }
 
-                    // Close any still-open thinking block
                     if (isThinking) {
                         controller.enqueue(encoder.encode("__THINKING_END__"));
                     }

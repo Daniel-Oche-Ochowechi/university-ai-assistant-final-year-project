@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import MessageBubble from "./MessageBubble";
 import ChatInput from "./ChatInput";
-import { Sparkles, Brain, Search, Info, X, Menu } from "lucide-react";
+import { Sparkles, Brain, Search, Info, X, Menu, Volume2, VolumeX } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 
@@ -30,6 +30,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
     const [thinkingText, setThinkingText] = useState("");
     const [isLoaded, setIsLoaded] = useState(false);
     const [showThoughts, setShowThoughts] = useState(true);
+    const [autoSpeak, setAutoSpeak] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -167,6 +168,13 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
             const finalMessages = [...updatedMessages, finalAiMessage];
             setMessages(finalMessages);
             await saveChatToDb(finalMessages);
+
+            if (autoSpeak && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(aiResponseContent.replace(/[_*`#]/g, ''));
+                window.speechSynthesis.speak(utterance);
+            }
+
         } catch (error: any) {
             console.error(error);
             const errorMsg: Message = { role: "assistant", content: error.message || "Connection interrupted.", timestamp: new Date() };
@@ -204,6 +212,16 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
+                        <button 
+                            onClick={() => {
+                                setAutoSpeak(!autoSpeak);
+                                if (autoSpeak) window.speechSynthesis.cancel();
+                            }}
+                            className="p-1.5 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors"
+                            title={autoSpeak ? "Disable Voice Feedback" : "Enable Voice Feedback"}
+                        >
+                            {autoSpeak ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                        </button>
                          {isThinking && (
                             <motion.div 
                                 initial={{ opacity: 0, x: 10 }}

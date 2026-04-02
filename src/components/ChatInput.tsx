@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Eraser, Sparkles, Command } from "lucide-react";
+import { ArrowUp, Eraser, Command } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -45,36 +45,22 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto px-6 pb-8 pt-4">
+        <div className="w-full max-w-3xl mx-auto px-4 md:px-6 pb-2 pt-2">
             <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                    "relative flex items-end gap-3 bg-white/[0.02] backdrop-blur-3xl rounded-[2.5rem] p-3 pl-8 transition-all duration-500 overflow-visible z-10",
-                    isFocused 
-                        ? "shadow-[0_0_60px_rgba(236,72,153,0.15),0_0_60px_rgba(6,182,212,0.15)] bg-white/[0.04]" 
-                        : ""
+                    "relative flex items-end gap-3 bg-[#111] border border-white/[0.08] rounded-[32px] p-2 pl-6 transition-all duration-300 z-10 shadow-2xl",
+                    isFocused ? "border-white/[0.2] bg-[#151515]" : ""
                 )}
             >
-                {/* Dynamic Neon Border Wrapper */}
-                <div className={cn(
-                    "absolute inset-0 rounded-[2.5rem] p-[1px] -z-10 transition-opacity duration-500 pointer-events-none",
-                    isFocused ? "opacity-100" : "opacity-30"
-                )}>
-                    <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500/40 via-indigo-500/40 to-cyan-500/40 rounded-[2.5rem]" />
-                </div>
 
-                <div className="absolute -top-4 left-8 px-3 py-1.5 bg-indigo-500 border border-indigo-400 rounded-full flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-[0_0_20px_rgba(99,102,241,0.5)] transform -translate-y-2 group-hover:translate-y-0 z-20">
-                    <Sparkles size={12} className="text-white" />
-                    <span className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">Neural Link Active</span>
-                </div>
-
+                {/* Minimal Icon Indicator */}
                 <div className={cn(
-                    "flex-shrink-0 mb-3 transition-colors duration-300",
-                    isFocused ? "text-fuchsia-400 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]" : "text-slate-500"
+                    "flex-shrink-0 mb-3.5 transition-colors duration-300",
+                    isFocused ? "text-white" : "text-zinc-600"
                 )}>
-                    <Command size={18} />
+                    <Command size={18} strokeWidth={2.5} />
                 </div>
 
                 <textarea
@@ -84,13 +70,13 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                     onKeyDown={handleKeyDown}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    placeholder="Describe your inquiry..."
-                    className="w-full max-h-[220px] resize-none bg-transparent text-slate-100 placeholder:text-slate-600 focus:outline-none py-3.5 shrink font-medium text-[15px] leading-relaxed scrollbar-hide selection:bg-fuchsia-500/30"
+                    placeholder="Message Nexus..."
+                    className="w-full max-h-[200px] resize-none bg-transparent text-zinc-100 placeholder:text-zinc-600 focus:outline-none py-3.5 shrink font-medium text-[15px] leading-relaxed scrollbar-hide"
                     rows={1}
                     disabled={isLoading}
                 />
 
-                <div className="flex gap-2.5 mb-1.5 shrink-0 pr-1 z-20">
+                <div className="flex gap-2 mb-1 shrink-0 pr-1 z-20">
                     <AnimatePresence>
                         {input.length > 0 && (
                             <motion.button
@@ -99,7 +85,7 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                                 exit={{ opacity: 0, scale: 0.5, rotate: 45 }}
                                 onClick={() => setInput("")}
                                 type="button"
-                                className="p-3 rounded-2xl text-slate-500 hover:text-white hover:bg-white/10 transition-all duration-300 active:scale-90"
+                                className="p-3 rounded-full text-zinc-500 hover:text-white hover:bg-white/10 transition-all duration-300"
                                 title="Clear Draft"
                             >
                                 <Eraser size={18} />
@@ -108,44 +94,29 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                     </AnimatePresence>
 
                     <button
-                        onClick={onClearChat}
-                        type="button"
-                        className="p-3 rounded-2xl text-slate-600 hover:text-rose-400 hover:bg-rose-500/10 transition-all duration-300 hidden sm:block active:scale-95 group"
-                        title="Decommission History"
-                        disabled={isLoading}
-                    >
-                        <Eraser size={18} className="group-hover:drop-shadow-[0_0_8px_rgba(244,63,94,0.8)] opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </button>
-
-                    <button
                         onClick={handleSend}
                         disabled={!input.trim() || isLoading}
                         className={cn(
-                            "w-12 h-12 rounded-2xl transition-all duration-500 flex items-center justify-center relative overflow-hidden group z-20",
+                            "w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center relative overflow-hidden group z-20 shadow-md",
                             input.trim() && !isLoading
-                                ? "bg-white text-slate-950 hover:scale-110 active:scale-95 shadow-[0_0_25px_rgba(255,255,255,0.3)]"
-                                : "bg-white/5 text-slate-700"
+                                ? "bg-white text-zinc-950 hover:scale-105 active:scale-95"
+                                : "bg-zinc-800 text-zinc-600"
                         )}
                     >
-                        {input.trim() && !isLoading && (
-                            <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-400/20 via-indigo-500/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        )}
-                        <ArrowUp size={22} strokeWidth={3} className="relative z-10 group-hover:-translate-y-1 group-active:translate-y-0 transition-transform duration-300" />
-                    </button>
+                        <ArrowUp size={20} strokeWidth={3} className="relative z-10 transition-transform duration-300" />
+                    </button> // Clean, simple send button
                 </div>
             </motion.div>
 
             <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex items-center justify-center gap-1.5 mt-5"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center justify-center mt-3"
             >
-                <div className="w-1 h-1 rounded-full bg-cyan-400/50 shadow-[0_0_5px_rgba(6,182,212,0.8)]" />
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-2">
-                    Enhanced by <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400 to-cyan-400">Nexus Intel Core-16</span>
+                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-2">
+                    NEXUS AI ASSISTANT V2.0
                 </span>
-                <div className="w-1 h-1 rounded-full bg-fuchsia-400/50 shadow-[0_0_5px_rgba(236,72,153,0.8)]" />
             </motion.div>
         </div>
     );

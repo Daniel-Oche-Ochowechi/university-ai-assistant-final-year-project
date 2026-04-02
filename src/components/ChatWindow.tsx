@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabase";
 export type Message = {
     role: "user" | "assistant" | "system" | "tool";
     content: string;
+    imageUrl?: string;
     timestamp?: Date;
     tool_call_id?: string;
     isStreaming?: boolean;
@@ -35,6 +36,8 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
         setIsLoaded(false);
         if (!chatId) {
             setMessages([{ role: "assistant", content: "Hi! I'm Nexus, your AI Assistant. How can I help you today?", timestamp: new Date() }]);
+            setIsThinking(false);
+            setThinkingText("");
             setIsLoaded(true);
             return;
         }
@@ -58,6 +61,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
         const messagesForDb = newMessages.map(m => ({
             role: m.role,
             content: m.content,
+            imageUrl: m.imageUrl,
             timestamp: m.timestamp?.toISOString()
         }));
 
@@ -86,8 +90,8 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
         scrollToBottom();
     }, [messages, isLoading, isThinking]);
 
-    const handleSendMessage = async (content: string) => {
-        const newUserMessage: Message = { role: "user", content, timestamp: new Date() };
+    const handleSendMessage = async (content: string, imageUrl?: string) => {
+        const newUserMessage: Message = { role: "user", content, imageUrl, timestamp: new Date() };
         const updatedMessages = [...messages, newUserMessage];
         setMessages(updatedMessages);
         setIsLoading(true);
@@ -101,7 +105,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                    messages: updatedMessages.map(m => ({ role: m.role, content: m.content })) 
+                    messages: updatedMessages.map(m => ({ role: m.role, content: m.content, imageUrl: m.imageUrl })) 
                 }),
             });
 
@@ -226,6 +230,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                                         key={index}
                                         role={msg.role as any}
                                         content={msg.content}
+                                        imageUrl={msg.imageUrl}
                                         timestamp={msg.timestamp}
                                     />
                                 ))}

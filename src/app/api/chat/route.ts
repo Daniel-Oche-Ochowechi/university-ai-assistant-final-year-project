@@ -6,7 +6,7 @@ import { search } from "duck-duck-scrape";
 export const runtime = "nodejs";
 
 export async function GET() {
-    return Response.json({ status: "API is active", model: "Kimi-K2-Thinking" });
+    return Response.json({ status: "API is active", model: "Hybrid (Kimi-K2-Thinking / GPT-4o Vision)" });
 }
 
 export async function POST(req: Request) {
@@ -17,11 +17,18 @@ export async function POST(req: Request) {
             return Response.json({ error: "Messages are required" }, { status: 400 });
         }
 
+        // Check if the conversation has any images uploaded to enable Vision mode
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const hasImage = messages.some((m: any) => m.imageUrl);
+        const targetModel = hasImage ? "gpt-4o" : "moonshotai/kimi-k2-thinking";
+
         // 1. RAG — Vector Search for relevant documents
-        const lastUserMessage = messages.slice().reverse().find((m: { role: string; content?: string }) => m.role === "user");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const lastUserMessage = messages.slice().reverse().find((m: any) => m.role === "user");
         const userQuery = lastUserMessage?.content || "";
         const relevantDocs = await getRelevantDocuments(userQuery);
-        const contextText = relevantDocs.map((doc: { content: string }) => doc.content).join("\n\n");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const contextText = relevantDocs.map((doc: any) => doc.content).join("\n\n");
 
         // 2. Optional web search — run proactively for queries that look like they need fresh info
         let webContext = "";
@@ -45,18 +52,31 @@ export async function POST(req: Request) {
             webContext ? `\n## Live Web Results\n${webContext}` : "",
         ].join("\n");
 
-        const apiMessages: { role: string; content: string }[] = [
+        // Format messages. If using Vision, convert imageURL to the OpenAI format
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const apiMessages: any[] = [
             { role: "system", content: systemContent },
-            ...messages,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ...messages.map((m: any) => {
+                if (m.imageUrl && m.role === "user") {
+                    return {
+                        role: m.role,
+                        content: [
+                            { type: "text", text: m.content || "Please analyze this image." },
+                            { type: "image_url", image_url: { url: m.imageUrl } }
+                        ]
+                    };
+                }
+                return { role: m.role, content: m.content };
+            })
         ];
 
-        // 3. Call NVIDIA Kimi-K2-Thinking (streaming)
+        // 3. Call OpenAI (or Kimi-K2 if no image)
         const stream = await openai.chat.completions.create({
-            model: "moonshotai/kimi-k2-thinking",
-            messages: apiMessages as Parameters<typeof openai.chat.completions.create>[0]["messages"],
-            temperature: 1,
-            top_p: 0.9,
-            max_tokens: 16384,
+            model: targetModel,
+            messages: apiMessages,
+            temperature: 0.7, // Lower text temp for gpt-4o, kimi was 1
+            max_tokens: 4000,
             stream: true,
         });
 
@@ -75,11 +95,9 @@ export async function POST(req: Request) {
                         };
 
                         // Stream reasoning (thinking) tokens prefixed with a special marker
-                        // so the frontend can distinguish them from the final answer.
                         const reasoning = delta?.reasoning_content;
                         if (reasoning) {
                             if (!isThinking) {
-                                // Signal start of reasoning block
                                 controller.enqueue(encoder.encode("__THINKING_START__"));
                                 isThinking = true;
                             }

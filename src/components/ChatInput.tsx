@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Eraser, Command } from "lucide-react";
+import { ArrowUp, Eraser, Command, Image as ImageIcon, Mic, MicOff, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ChatInputProps {
-    onSendMessage: (message: string) => void;
+    onSendMessage: (message: string, imageUrl?: string) => void;
     onClearChat: () => void;
     isLoading: boolean;
 }
@@ -12,7 +12,46 @@ interface ChatInputProps {
 export default function ChatInput({ onSendMessage, onClearChat, isLoading }: ChatInputProps) {
     const [input, setInput] = useState("");
     const [isFocused, setIsFocused] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [isRecording, setIsRecording] = useState(false);
+
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const recognitionRef = useRef<any>(null);
+
+    // Initialize Speech Recognition
+    useEffect(() => {
+        // @ts-expect-error w3c standard fallback
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = true;
+            recognitionRef.current.interimResults = true;
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            recognitionRef.current.onresult = (event: any) => {
+                let currentTranscript = "";
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        setInput(prev => prev + transcript + " ");
+                    } else {
+                        currentTranscript += transcript;
+                    }
+                }
+            };
+
+            recognitionRef.current.onerror = () => {
+                setIsRecording(false);
+            };
+
+            recognitionRef.current.onend = () => {
+                setIsRecording(false);
+            };
+        }
+    }, []);
 
     // Auto-resize textarea
     useEffect(() => {
@@ -22,15 +61,12 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
         }
     }, [input]);
 
-    // Auto-focus on mount
-    useEffect(() => {
-        textareaRef.current?.focus();
-    }, []);
-
     const handleSend = () => {
-        if (input.trim() && !isLoading) {
-            onSendMessage(input.trim());
+        if ((input.trim() || imagePreview) && !isLoading) {
+            onSendMessage(input.trim(), imagePreview || undefined);
             setInput("");
+            setImageFile(null);
+            setImagePreview(null);
             if (textareaRef.current) {
                 textareaRef.current.style.height = "auto";
             }
@@ -44,37 +80,119 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
         }
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const removeImage = () => {
+        setImageFile(null);
+        setImagePreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
+
+    const toggleRecording = () => {
+        if (!recognitionRef.current) {
+            alert("Speech recognition is not supported in this browser.");
+            return;
+        }
+
+        if (isRecording) {
+            recognitionRef.current.stop();
+            setIsRecording(false);
+        } else {
+            recognitionRef.current.start();
+            setIsRecording(true);
+        }
+    };
+
     return (
-        <div className="w-full max-w-3xl mx-auto px-4 md:px-6 pb-2 pt-2">
+        <div className="w-full max-w-3xl mx-auto px-4 md:px-6 pb-2 pt-2 flex flex-col gap-2">
+            
+            {/* Image Preview Area */}
+            <AnimatePresence>
+                {imagePreview && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="relative self-start ml-2 mb-2"
+                    >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={imagePreview} alt="Upload preview" className="h-20 w-auto rounded-xl object-cover border border-white/10 shadow-lg" />
+                        <button 
+                            onClick={removeImage}
+                            className="absolute -top-2 -right-2 p-1 bg-zinc-800 border border-white/20 rounded-full text-white hover:bg-zinc-700 transition-colors shadow-xl"
+                        >
+                            <X size={12} />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                    "relative flex items-end gap-3 bg-[#111] border border-white/[0.08] rounded-[32px] p-2 pl-6 transition-all duration-300 z-10 shadow-2xl",
-                    isFocused ? "border-white/[0.2] bg-[#151515]" : ""
+                    "relative flex items-end gap-2 bg-[#111] border border-white/[0.08] rounded-[32px] p-2 pl-4 transition-all duration-300 z-10 shadow-2xl",
+                    isFocused ? "border-white/[0.2] bg-[#151515]" : "",
+                    isRecording ? "border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.15)]" : ""
                 )}
             >
 
-                {/* Minimal Icon Indicator */}
-                <div className={cn(
-                    "flex-shrink-0 mb-3.5 transition-colors duration-300",
-                    isFocused ? "text-white" : "text-zinc-600"
-                )}>
-                    <Command size={18} strokeWidth={2.5} />
+                {/* Left side actions */}
+                <div className="flex gap-1 mb-2.5 shrink-0">
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2 rounded-full text-zinc-500 hover:text-white hover:bg-white/10 transition-colors"
+                        title="Upload Image"
+                        disabled={isLoading}
+                    >
+                        <ImageIcon size={18} />
+                    </button>
+                    <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        onChange={handleImageChange} 
+                        accept="image/*" 
+                        className="hidden" 
+                    />
+                    
+                    <button
+                        onClick={toggleRecording}
+                        className={cn(
+                            "p-2 rounded-full transition-colors",
+                            isRecording 
+                                ? "text-red-400 bg-red-500/10 animate-pulse" 
+                                : "text-zinc-500 hover:text-white hover:bg-white/10"
+                        )}
+                        title="Voice Dictation"
+                    >
+                        {isRecording ? <Mic size={18} /> : <MicOff size={18} />}
+                    </button>
                 </div>
 
-                <textarea
-                    ref={textareaRef}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    placeholder="Message Nexus..."
-                    className="w-full max-h-[200px] resize-none bg-transparent text-zinc-100 placeholder:text-zinc-600 focus:outline-none py-3.5 shrink font-medium text-[15px] leading-relaxed scrollbar-hide"
-                    rows={1}
-                    disabled={isLoading}
-                />
+                <div className="flex-1 min-w-0">
+                    <textarea
+                        ref={textareaRef}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                        placeholder={isRecording ? "Listening..." : "Message Nexus..."}
+                        className="w-full max-h-[200px] resize-none bg-transparent text-zinc-100 placeholder:text-zinc-600 focus:outline-none py-3 shrink font-medium text-[15px] leading-relaxed scrollbar-hide"
+                        rows={1}
+                        disabled={isLoading}
+                    />
+                </div>
 
                 <div className="flex gap-2 mb-1 shrink-0 pr-1 z-20">
                     <AnimatePresence>
@@ -95,16 +213,16 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
 
                     <button
                         onClick={handleSend}
-                        disabled={!input.trim() || isLoading}
+                        disabled={(!input.trim() && !imagePreview) || isLoading}
                         className={cn(
                             "w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center relative overflow-hidden group z-20 shadow-md",
-                            input.trim() && !isLoading
+                            (input.trim() || imagePreview) && !isLoading
                                 ? "bg-white text-zinc-950 hover:scale-105 active:scale-95"
                                 : "bg-zinc-800 text-zinc-600"
                         )}
                     >
                         <ArrowUp size={20} strokeWidth={3} className="relative z-10 transition-transform duration-300" />
-                    </button> // Clean, simple send button
+                    </button>
                 </div>
             </motion.div>
 
@@ -114,9 +232,12 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 transition={{ delay: 0.3 }}
                 className="flex items-center justify-center mt-3"
             >
-                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-2">
-                    NEXUS AI ASSISTANT V2.0
-                </span>
+                <div className="flex items-center gap-1">
+                    <Command size={10} className="text-zinc-500" />
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+                        Nexus AI Assistant V2.1
+                    </span>
+                </div>
             </motion.div>
         </div>
     );

@@ -10,10 +10,11 @@ import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 interface MessageBubbleProps {
   role: "user" | "assistant" | "system";
   content: string;
+  imageUrl?: string;
   timestamp?: Date;
 }
 
-export default function MessageBubble({ role, content, timestamp }: MessageBubbleProps) {
+export default function MessageBubble({ role, content, imageUrl, timestamp }: MessageBubbleProps) {
   const isUser = role === "user";
   const [copied, setCopied] = useState(false);
 
@@ -66,6 +67,12 @@ export default function MessageBubble({ role, content, timestamp }: MessageBubbl
                 : "bg-[#111] text-zinc-200 rounded-[28px] rounded-bl-[8px] border border-white/[0.05] shadow-lg"
             )}
           >
+            {imageUrl && (
+              <div className="mb-4 overflow-hidden rounded-xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={imageUrl} alt="Uploaded content" className="w-full max-w-[300px] h-auto object-cover shadow-sm border border-black/5" />
+              </div>
+            )}
             <div className="relative z-10 w-full max-w-full">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}

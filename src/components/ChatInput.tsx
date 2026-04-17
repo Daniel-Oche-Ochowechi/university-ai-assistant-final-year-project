@@ -141,9 +141,9 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                    "relative flex items-end gap-2 bg-[#111] border border-white/[0.08] rounded-[32px] p-2 pl-4 transition-all duration-300 z-10 shadow-2xl",
-                    isFocused ? "border-white/[0.2] bg-[#151515]" : "",
-                    isRecording ? "border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.15)]" : ""
+                    "relative flex items-end gap-2 bg-[#0A0A0A]/80 backdrop-blur-2xl border border-white/[0.08] rounded-[32px] p-2 pl-4 transition-all duration-500 z-10 shadow-2xl",
+                    isFocused ? "border-white/[0.25] shadow-[0_0_40px_rgba(255,255,255,0.06)] bg-[#0C0C0C]" : "",
+                    isRecording ? "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] bg-[#1A0A0A]" : ""
                 )}
             >
 
@@ -168,9 +168,9 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                     <button
                         onClick={toggleRecording}
                         className={cn(
-                            "p-2 rounded-full transition-colors",
+                            "p-2 rounded-full transition-all duration-300",
                             isRecording 
-                                ? "text-red-400 bg-red-500/10 animate-pulse" 
+                                ? "text-red-400 bg-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.4)] animate-pulse" 
                                 : "text-zinc-500 hover:text-white hover:bg-white/10"
                         )}
                         title="Voice Dictation"
@@ -187,8 +187,8 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                         onKeyDown={handleKeyDown}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        placeholder={isRecording ? "Listening..." : "Message Nexus..."}
-                        className="w-full max-h-[200px] resize-none bg-transparent text-zinc-100 placeholder:text-zinc-600 focus:outline-none py-3 shrink font-medium text-[15px] leading-relaxed scrollbar-hide"
+                        placeholder={isRecording ? "Listening to your voice..." : "Message MIU AI..."}
+                        className="w-full max-h-[200px] resize-none bg-transparent text-white placeholder:text-zinc-500 focus:outline-none py-3 shrink font-medium text-[15px] leading-relaxed scrollbar-hide selection:bg-white/20"
                         rows={1}
                         disabled={isLoading}
                     />
@@ -215,10 +215,10 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                         onClick={handleSend}
                         disabled={(!input.trim() && !imagePreview) || isLoading}
                         className={cn(
-                            "w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center relative overflow-hidden group z-20 shadow-md",
+                            "w-10 h-10 rounded-full transition-all duration-500 flex items-center justify-center relative overflow-hidden group z-20",
                             (input.trim() || imagePreview) && !isLoading
-                                ? "bg-white text-zinc-950 hover:scale-105 active:scale-95"
-                                : "bg-zinc-800 text-zinc-600"
+                                ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:scale-105 active:scale-95"
+                                : "bg-white/5 text-zinc-600 border border-white/[0.05]"
                         )}
                     >
                         <ArrowUp size={20} strokeWidth={3} className="relative z-10 transition-transform duration-300" />
@@ -233,9 +233,9 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 className="flex items-center justify-center mt-3"
             >
                 <div className="flex items-center gap-1">
-                    <Command size={10} className="text-zinc-500" />
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
-                        Nexus AI Assistant V2.1
+                    <Command size={10} className="text-zinc-400 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]" />
+                    <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-zinc-300 to-zinc-500 uppercase tracking-widest pl-1">
+                        MIU AI Assistant V2.1
                     </span>
                 </div>
             </motion.div>

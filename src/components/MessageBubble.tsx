@@ -100,10 +100,10 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
           
           <div
             className={cn(
-              "px-5 py-4 text-[14px] sm:text-[15px] leading-relaxed tracking-wide font-medium relative group",
+              "px-5 py-4 text-[14px] sm:text-[15px] leading-relaxed tracking-wide font-medium relative group transition-all",
               isUser
-                ? "bg-zinc-100 text-zinc-950 rounded-[28px] rounded-br-[8px] shadow-sm"
-                : "bg-[#111] text-zinc-200 rounded-[28px] rounded-bl-[8px] border border-white/[0.05] shadow-lg"
+                ? "bg-gradient-to-br from-white to-zinc-300 text-black rounded-[28px] rounded-br-[8px] shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
+                : "bg-white/[0.04] backdrop-blur-md text-zinc-200 rounded-[28px] rounded-bl-[8px] border border-white/[0.08] shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
             )}
           >
             {imageUrl && (
@@ -119,13 +119,8 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
                   code({ node, inline, className, children, ...props }: any) {
                     const match = /language-(\w+)/.exec(className || "");
                     return !inline && match ? (
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                        className="relative my-4 group/code w-full overflow-hidden rounded-2xl border border-white/[0.08]"
-                      >
-                        <div className="absolute top-2 right-2 px-2 py-1 bg-white/10 rounded-md flex items-center gap-2 opacity-0 group-hover/code:opacity-100 transition-opacity z-10 pointer-events-none">
+                      <div className="relative my-4 group/code w-full overflow-hidden rounded-2xl border border-white/[0.1] shadow-2xl">
+                        <div className="absolute top-2 right-2 px-2 py-1 bg-white/10 backdrop-blur-md rounded-md flex items-center gap-2 opacity-0 group-hover/code:opacity-100 transition-opacity z-10 pointer-events-none">
                             <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest">{match[1]}</span>
                         </div>
                         <SyntaxHighlighter
@@ -137,22 +132,18 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
                         >
                           {String(children).replace(/\n$/, "")}
                         </SyntaxHighlighter>
-                      </motion.div>
+                      </div>
                     ) : (
-                      <code className="bg-white/10 border border-white/5 text-zinc-300 px-1.5 py-0.5 rounded-lg font-mono text-[13px] whitespace-pre-wrap break-words" {...props}>
+                      <code className="bg-white/10 border border-white/5 text-emerald-400 px-1.5 py-0.5 rounded-lg font-mono text-[13px] whitespace-pre-wrap break-words" {...props}>
                         {children}
                       </code>
                     );
                   },
                   p({children}) {
                     return (
-                      <motion.p 
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="leading-relaxed opacity-90 mb-4 last:mb-0 inline-block w-full break-words"
-                      >
+                      <p className="leading-relaxed opacity-95 mb-4 last:mb-0 inline-block w-full break-words">
                         {children}
-                      </motion.p>
+                      </p>
                     );
                   },
                   ul({children}) {

@@ -155,12 +155,12 @@ export default function Home() {
       {/* Sidebar Header */}
       <div className="flex items-center justify-between pb-8 pt-4 px-2">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-white text-black flex items-center justify-center shadow-lg">
-            <Command size={18} className="text-black" />
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-white to-zinc-300 text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+            <Command size={20} strokeWidth={2.5} className="text-black" />
           </div>
           <div>
-            <h1 className="font-bold text-base leading-none tracking-tight text-white">MIU AI Assistant</h1>
-            <p className="text-[10px] text-zinc-400 font-semibold tracking-widest uppercase mt-1">Official AI</p>
+            <h1 className="font-extrabold text-[15px] leading-none tracking-tight text-white drop-shadow-md">MIU AI Assistant</h1>
+            <p className="text-[9px] text-zinc-400 font-bold tracking-[0.2em] uppercase mt-1.5">Official AI</p>
           </div>
         </div>
         
@@ -176,7 +176,7 @@ export default function Home() {
       {/* New Chat Button - Smooth Glassy Solid */}
       <button 
         onClick={() => navigateToChat(null)}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3.5 mb-8 bg-white/10 hover:bg-white text-white hover:text-black text-[13px] font-bold rounded-2xl transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.02)] group active:scale-[0.98]"
+        className="w-full flex items-center justify-center gap-2 px-4 py-4 mb-8 bg-gradient-to-r from-zinc-100 to-zinc-300 text-black text-[13px] font-bold rounded-2xl transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.25)] hover:scale-[1.02] group active:scale-[0.98]"
       >
         <Plus size={16} strokeWidth={3} className="text-current transition-transform duration-300 group-hover:rotate-90" />
         Start New Conversation
@@ -184,7 +184,7 @@ export default function Home() {
 
       {/* Navigation / Recent Activity */}
       <div className="flex-1 overflow-y-auto custom-scrollbar -mr-4 pr-4">
-        <div className="text-[10px] text-zinc-500 font-bold mb-4 px-2 tracking-[0.1em]">RECENT ACTIVE</div>
+        <div className="text-[10px] text-zinc-500 font-bold mb-4 px-3 tracking-[0.2em] uppercase">Recent Activity</div>
         <div className="space-y-1">
           <AnimatePresence mode="popLayout">
             {chats.length === 0 ? (
@@ -200,13 +200,13 @@ export default function Home() {
                 <motion.div layout key={chat.id} className="relative group">
                   <button 
                     onClick={() => navigateToChat(chat.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-[13px] rounded-xl transition-all duration-300 ${
+                    className={`w-full flex items-center gap-3 px-3 py-3 text-[13px] rounded-xl transition-all duration-300 ${
                       activeChatId === chat.id 
-                        ? "bg-white/[0.06] text-white font-semibold pr-10" 
-                        : "text-zinc-400 hover:text-white hover:bg-white/[0.03] pr-10"
+                        ? "bg-white/[0.08] text-white font-semibold pr-10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/5" 
+                        : "text-zinc-500 hover:text-white hover:bg-white/[0.04] pr-10 border border-transparent"
                     }`}
                   >
-                    <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-white" : "text-zinc-600 group-hover:text-zinc-400"}`} />
+                    <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "text-zinc-600 group-hover:text-zinc-400"}`} />
                     <span className="truncate flex-1 text-left">{chat.title}</span>
                   </button>
                   <button
@@ -224,36 +224,36 @@ export default function Home() {
       </div>
 
       {/* Footer / User Profile */}
-      <div className="pt-6 mt-6 pb-2">
-        <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl p-3 flex flex-col gap-3">
+      <div className="pt-6 mt-6 pb-4">
+        <div className="bg-[#050505]/40 backdrop-blur-3xl border border-white/[0.05] rounded-[24px] p-4 flex flex-col gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white font-bold uppercase text-xs">
+            <div className="w-9 h-9 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-white font-bold uppercase text-xs shadow-inner">
               {session.user.email?.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] text-zinc-500 font-bold tracking-wider">SESSION</p>
-              <p className="text-[12px] text-zinc-200 font-medium truncate leading-tight">{session.user.email}</p>
+              <p className="text-[9px] text-zinc-500 font-bold tracking-[0.2em]">SESSION</p>
+              <p className="text-[12px] text-zinc-200 font-bold truncate leading-tight mt-0.5">{session.user.email}</p>
             </div>
           </div>
           <div className="flex gap-2">
             <button 
               onClick={() => setIsApiModalOpen(true)}
-              className="flex-shrink-0 flex items-center justify-center gap-2 px-3 py-2 text-[11px] font-semibold text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+              className="flex-shrink-0 flex items-center justify-center gap-2 px-3 py-2 text-[11px] font-bold text-white bg-white/[0.06] hover:bg-white/15 rounded-xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
               title="Developer API"
             >
               <Key size={12} />
             </button>
             <button 
               onClick={() => setIsEmbedModalOpen(true)}
-              className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-semibold text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+              className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-bold text-white bg-white/[0.06] hover:bg-white/15 rounded-xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
             >
               <Code size={12} /> Integrate
             </button>
             <button 
               onClick={handleSignOut}
-              className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-semibold text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+              className="flex-shrink-0 flex items-center justify-center gap-2 px-3 py-2 text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition-all"
             >
-              <LogOut size={12} /> Logout
+              <LogOut size={12} />
             </button>
           </div>
         </div>
@@ -262,13 +262,16 @@ export default function Home() {
   );
 
   return (
-    <div className="flex w-full h-[100dvh] overflow-hidden bg-[#050505] text-zinc-100 font-sans selection:bg-white/20">
+    <div className="flex w-full h-[100dvh] overflow-hidden bg-[#000000] text-zinc-100 font-sans selection:bg-white/20 relative z-0">
 
-      {/* Ultra Minimal Ambient Glow (Gen Z Classy Vibe) */}
-      <div className="fixed top-0 left-[20%] w-[60%] h-[40%] bg-zinc-800/15 blur-[120px] rounded-full pointer-events-none -z-0 mix-blend-screen opacity-50" />
+      {/* Animated Mesh Gradients */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
+        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-indigo-500/20 blur-[150px] rounded-full" />
+        <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] bg-purple-500/20 blur-[150px] rounded-full" />
+      </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-[280px] border-r border-white/[0.04] bg-[#050505]/60 backdrop-blur-3xl p-5 shrink-0 z-10 relative">
+      <aside className="hidden md:flex flex-col w-[320px] border-r border-white/[0.04] bg-[#000000]/40 backdrop-blur-[60px] p-6 shrink-0 z-10 relative shadow-[10px_0_50px_rgba(0,0,0,0.5)]">
         <SidebarContent />
       </aside>
 
@@ -322,7 +325,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl p-6 md:p-8"
+              className="relative w-full max-w-lg bg-[#0A0A0A]/90 backdrop-blur-3xl border border-white/[0.08] rounded-[32px] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.8)] p-6 md:p-8"
             >
               <button 
                 onClick={() => setIsEmbedModalOpen(false)}
@@ -356,8 +359,8 @@ export default function Home() {
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 }}
-                className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  copied ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white text-black hover:bg-zinc-200"
+                className={`w-full py-4 rounded-[20px] text-sm font-extrabold flex items-center justify-center gap-2 transition-all duration-300 ${
+                  copied ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.3)]" : "bg-gradient-to-r from-zinc-100 to-zinc-300 text-black hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 }`}
               >
                 {copied ? <><Check size={16} /> Copied to Clipboard!</> : <><Code size={16} /> Copy Embed Code</>}
@@ -380,7 +383,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl p-6 md:p-8"
+              className="relative w-full max-w-lg bg-[#0A0A0A]/90 backdrop-blur-3xl border border-white/[0.08] rounded-[32px] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.8)] p-6 md:p-8"
             >
               <button 
                 onClick={() => setIsApiModalOpen(false)}
@@ -436,7 +439,7 @@ export default function Home() {
               <button 
                 onClick={createApiKey}
                 disabled={isCreatingKey}
-                className="w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all bg-white text-black hover:bg-zinc-200 disabled:opacity-50"
+                className="w-full py-4 rounded-[20px] text-sm font-extrabold flex items-center justify-center gap-2 transition-all duration-300 bg-gradient-to-r from-zinc-100 to-zinc-300 text-black hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50"
               >
                 {isCreatingKey ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
                 Generate New Key

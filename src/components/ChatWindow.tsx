@@ -36,7 +36,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
     useEffect(() => {
         setIsLoaded(false);
         if (!chatId) {
-            setMessages([{ role: "assistant", content: "Hi! I'm Nexus, your AI Assistant. How can I help you today?", timestamp: new Date() }]);
+            setMessages([{ role: "assistant", content: "Hi! I'm your MIU AI Assistant. How can I help you today?", timestamp: new Date() }]);
             setIsThinking(false);
             setThinkingText("");
             setIsLoaded(true);
@@ -185,7 +185,15 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
         }
     };
 
-    const clearChat = () => { if (onChatCreated) onChatCreated("", "New Chat"); };
+    const clearChat = () => {
+        if (onChatCreated) {
+            onChatCreated("", "New Chat");
+        } else {
+            setMessages([{ role: "assistant", content: "Hi! I'm your MIU AI Assistant. How can I help you today?", timestamp: new Date() }]);
+            setIsThinking(false);
+            setThinkingText("");
+        }
+    };
 
     return (
         <div className="flex w-full h-full relative overflow-hidden bg-transparent">
@@ -207,8 +215,8 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                             <Sparkles className="text-white" size={16} />
                         </div>
                         <div>
-                            <h1 className="text-sm font-bold text-white tracking-tight">Nexus Dialogue</h1>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5">Active Channel</p>
+                            <h1 className="text-sm font-bold text-white tracking-tight">MIU AI Assistant</h1>
+                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5">Mewar University</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">

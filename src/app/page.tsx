@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import ChatWindow from "@/components/ChatWindow";
 import Auth from "@/components/Auth";
-import { Plus, LogOut, Loader2, Command, X, MessageSquareText } from "lucide-react";
+import { Plus, LogOut, Loader2, Command, X, MessageSquareText, Code, Check } from "lucide-react";
 import { Session } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,6 +16,14 @@ export default function Home() {
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isEmbedModalOpen, setIsEmbedModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // Generate dynamic embed iframe based on current host
+  const getEmbedCode = () => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+    return `<iframe src="${baseUrl}/embed" width="100%" height="600" style="border:none; border-radius:12px; overflow:hidden;" allow="clipboard-write; microphone"></iframe>`;
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -97,8 +105,8 @@ export default function Home() {
             <Command size={18} className="text-black" />
           </div>
           <div>
-            <h1 className="font-bold text-base leading-none tracking-tight text-white">MIU Assistant</h1>
-            <p className="text-[10px] text-zinc-400 font-semibold tracking-widest uppercase mt-1">Nexus Core</p>
+            <h1 className="font-bold text-base leading-none tracking-tight text-white">MIU AI Assistant</h1>
+            <p className="text-[10px] text-zinc-400 font-semibold tracking-widest uppercase mt-1">Official AI</p>
           </div>
         </div>
         
@@ -166,12 +174,20 @@ export default function Home() {
               <p className="text-[12px] text-zinc-200 font-medium truncate leading-tight">{session.user.email}</p>
             </div>
           </div>
-          <button 
-            onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl transition-all"
-          >
-            <LogOut size={14} /> End Session
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => setIsEmbedModalOpen(true)}
+              className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-semibold text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+            >
+              <Code size={12} /> Integrate
+            </button>
+            <button 
+              onClick={handleSignOut}
+              className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-semibold text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+            >
+              <LogOut size={12} /> Logout
+            </button>
+          </div>
         </div>
       </div>
     </>
@@ -224,6 +240,64 @@ export default function Home() {
           onMenuToggle={() => setIsSidebarOpen(true)}
         />
       </main>
+
+      {/* Embed Modal */}
+      <AnimatePresence>
+        {isEmbedModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={() => setIsEmbedModalOpen(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl p-6 md:p-8"
+            >
+              <button 
+                onClick={() => setIsEmbedModalOpen(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+              
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <Code size={20} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-white tracking-tight">Website Integration</h2>
+                  <p className="text-xs text-zinc-400">Embed this AI on your official website</p>
+                </div>
+              </div>
+
+              <div className="mb-6 space-y-2">
+                <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">Iframe Snippet</label>
+                <div className="relative group">
+                  <pre className="p-4 rounded-xl bg-black border border-white/10 text-zinc-300 text-xs font-mono overflow-x-auto select-all whitespace-pre-wrap">
+                    {getEmbedCode()}
+                  </pre>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(getEmbedCode());
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                  copied ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white text-black hover:bg-zinc-200"
+                }`}
+              >
+                {copied ? <><Check size={16} /> Copied to Clipboard!</> : <><Code size={16} /> Copy Embed Code</>}
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -209,13 +209,19 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
             }
 
         } catch (error: any) {
+            if (error.name === 'AbortError' || error.message?.includes('aborted')) {
+                // Silently swallow abort errors caused by user navigation/chat switching
+                return;
+            }
             console.error(error);
             const errorMsg: Message = { role: "assistant", content: error.message || "Connection interrupted.", timestamp: new Date() };
             setMessages(prev => [...prev, errorMsg]);
-        } finally {
             setIsLoading(false);
             setIsThinking(false);
         }
+        
+        setIsLoading(false);
+        setIsThinking(false);
     };
 
     const clearChat = () => {

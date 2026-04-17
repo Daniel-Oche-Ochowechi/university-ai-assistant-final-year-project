@@ -14,7 +14,7 @@ create table if not exists documents (
 drop table if exists conversations;
 
 -- Create table for proper user conversations
-create table user_chats (
+create table if not exists user_chats (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users(id) not null,
   title text not null,
@@ -79,3 +79,7 @@ alter table api_keys enable row level security;
 create policy "Users can view their own API keys" on api_keys for select using (auth.uid() = user_id);
 create policy "Users can insert their own API keys" on api_keys for insert with check (auth.uid() = user_id);
 create policy "Users can delete their own API keys" on api_keys for delete using (auth.uid() = user_id);
+
+-- Soft delete functionality for chats
+alter table user_chats add column if not exists is_hidden boolean default false not null;
+

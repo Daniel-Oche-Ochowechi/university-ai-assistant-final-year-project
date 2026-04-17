@@ -84,6 +84,7 @@ export default function Home() {
       const { data } = await supabase
         .from("user_chats")
         .select("id, title, updated_at")
+        .eq("is_hidden", false)
         .order("updated_at", { ascending: false });
       
       if (data) setChats(data);
@@ -133,6 +134,22 @@ export default function Home() {
     setIsSidebarOpen(false); // Close mobile sidebar on select
   };
 
+  const handleDeleteChat = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // prevent chat selection toggle
+    if (!session) return;
+    
+    // Soft delete the chat by marking it hidden
+    await supabase.from("user_chats").update({ is_hidden: true }).eq("id", id);
+    
+    // Optimistic UI update
+    setChats(prev => prev.filter(c => c.id !== id));
+    
+    // Instantly generate a clean slate if they deleted the active viewed chat
+    if (activeChatId === id) {
+      navigateToChat(null);
+    }
+  };
+
   const SidebarContent = () => (
     <>
       {/* Sidebar Header */}
@@ -180,19 +197,26 @@ export default function Home() {
               </motion.div>
             ) : (
               chats.map((chat) => (
-                <motion.button 
-                  layout
-                  key={chat.id}
-                  onClick={() => navigateToChat(chat.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-[13px] rounded-xl transition-all duration-300 group ${
-                    activeChatId === chat.id 
-                      ? "bg-white/[0.06] text-white font-semibold" 
-                      : "text-zinc-400 hover:text-white hover:bg-white/[0.03]"
-                  }`}
-                >
-                  <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-white" : "text-zinc-600 group-hover:text-zinc-400"}`} />
-                  <span className="truncate flex-1 text-left">{chat.title}</span>
-                </motion.button>
+                <motion.div layout key={chat.id} className="relative group">
+                  <button 
+                    onClick={() => navigateToChat(chat.id)}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-[13px] rounded-xl transition-all duration-300 ${
+                      activeChatId === chat.id 
+                        ? "bg-white/[0.06] text-white font-semibold pr-10" 
+                        : "text-zinc-400 hover:text-white hover:bg-white/[0.03] pr-10"
+                    }`}
+                  >
+                    <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-white" : "text-zinc-600 group-hover:text-zinc-400"}`} />
+                    <span className="truncate flex-1 text-left">{chat.title}</span>
+                  </button>
+                  <button
+                    onClick={(e) => handleDeleteChat(chat.id, e)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg opacity-0 group-hover:opacity-100 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:scale-105 transition-all z-10"
+                    title="Delete Chat"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </motion.div>
               ))
             )}
           </AnimatePresence>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import ChatWindow from "@/components/ChatWindow";
 import Auth from "@/components/Auth";
-import { Plus, LogOut, Loader2, Command, X, MessageSquareText, Code, Check } from "lucide-react";
+import { Plus, LogOut, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2 } from "lucide-react";
 import { Session } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,7 +17,44 @@ export default function Home() {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isEmbedModalOpen, setIsEmbedModalOpen] = useState(false);
+  const [isApiModalOpen, setIsApiModalOpen] = useState(false);
+  const [apiKeys, setApiKeys] = useState<{id: string, name: string, key: string, created_at: string}[]>([]);
+  const [isCreatingKey, setIsCreatingKey] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const fetchApiKeys = async () => {
+    if (!session) return;
+    const response = await fetch('/api/keys', {
+      headers: { 'Authorization': `Bearer ${session.access_token}` },
+    });
+    const data = await response.json();
+    if (data.keys) setApiKeys(data.keys);
+  };
+
+  const createApiKey = async () => {
+    if (!session) return;
+    setIsCreatingKey(true);
+    await fetch('/api/keys', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Development Key' })
+    });
+    await fetchApiKeys();
+    setIsCreatingKey(false);
+  };
+
+  const deleteApiKey = async (id: string) => {
+    if (!session) return;
+    await fetch(`/api/keys?id=${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${session.access_token}` }
+    });
+    await fetchApiKeys();
+  };
+
+  useEffect(() => {
+    if (isApiModalOpen) fetchApiKeys();
+  }, [isApiModalOpen, session]);
 
   // Generate dynamic embed iframe based on current host
   const getEmbedCode = () => {
@@ -176,6 +213,13 @@ export default function Home() {
           </div>
           <div className="flex gap-2">
             <button 
+              onClick={() => setIsApiModalOpen(true)}
+              className="flex-shrink-0 flex items-center justify-center gap-2 px-3 py-2 text-[11px] font-semibold text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+              title="Developer API"
+            >
+              <Key size={12} />
+            </button>
+            <button 
               onClick={() => setIsEmbedModalOpen(true)}
               className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-semibold text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all"
             >
@@ -293,6 +337,85 @@ export default function Home() {
                 }`}
               >
                 {copied ? <><Check size={16} /> Copied to Clipboard!</> : <><Code size={16} /> Copy Embed Code</>}
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Developer API Modal */}
+      <AnimatePresence>
+        {isApiModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={() => setIsApiModalOpen(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl p-6 md:p-8"
+            >
+              <button 
+                onClick={() => setIsApiModalOpen(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+              
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <Key size={20} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-white tracking-tight">Developer API</h2>
+                  <p className="text-xs text-zinc-400">Generate stateless keys for external backends</p>
+                </div>
+              </div>
+
+              <div className="mb-6 space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                {apiKeys.length === 0 ? (
+                  <div className="p-4 rounded-xl border border-dashed border-white/10 text-center text-xs text-zinc-500">
+                    No API keys active.
+                  </div>
+                ) : (
+                  apiKeys.map(k => (
+                    <div key={k.id} className="flex flex-col gap-2 p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-zinc-300">{k.name}</span>
+                        <button onClick={() => deleteApiKey(k.id)} className="text-red-400 hover:text-red-300 p-1">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <code className="flex-1 px-3 py-2 bg-black border border-white/10 rounded-lg text-[11px] text-zinc-400 font-mono truncate select-all">
+                          {k.key}
+                        </code>
+                        <button 
+                          onClick={() => {
+                            navigator.clipboard.writeText(k.key);
+                            setCopied(true);
+                            setTimeout(() => setCopied(false), 2000);
+                          }}
+                          className="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold transition-colors"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <button 
+                onClick={createApiKey}
+                disabled={isCreatingKey}
+                className="w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all bg-white text-black hover:bg-zinc-200 disabled:opacity-50"
+              >
+                {isCreatingKey ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+                Generate New Key
               </button>
             </motion.div>
           </div>

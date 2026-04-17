@@ -63,3 +63,19 @@ begin
   limit match_count;
 end;
 $$;
+
+-- Create table for managing third-party Developer API Keys
+create table if not exists api_keys (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) not null,
+  key text unique not null,
+  name text not null default 'Production Key',
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Enable RLS for api_keys
+alter table api_keys enable row level security;
+
+create policy "Users can view their own API keys" on api_keys for select using (auth.uid() = user_id);
+create policy "Users can insert their own API keys" on api_keys for insert with check (auth.uid() = user_id);
+create policy "Users can delete their own API keys" on api_keys for delete using (auth.uid() = user_id);

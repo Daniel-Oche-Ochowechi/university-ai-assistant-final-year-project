@@ -32,16 +32,35 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
     const [showThoughts, setShowThoughts] = useState(true);
     const [autoSpeak, setAutoSpeak] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const activeChatIdRef = useRef<string | null>(chatId || null);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     useEffect(() => {
         setIsLoaded(false);
+
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+            setIsLoading(false);
+            setIsThinking(false);
+        }
+
         if (!chatId) {
             setMessages([{ role: "assistant", content: "Hi! I'm your MIU AI Assistant. How can I help you today?", timestamp: new Date() }]);
             setIsThinking(false);
             setThinkingText("");
             setIsLoaded(true);
+            activeChatIdRef.current = null;
             return;
         }
+
+        // Avoid refetching if we already know this chat internally (just created it)
+        if (activeChatIdRef.current === chatId && messages.length > 1) {
+            setIsLoaded(true);
+            return;
+        }
+
+        activeChatIdRef.current = chatId;
 
         const fetchChat = async () => {
             const { data } = await supabase.from('user_chats').select('messages').eq('id', chatId).single();
@@ -50,9 +69,14 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                     ...m,
                     timestamp: m.timestamp ? new Date(m.timestamp) : undefined
                 }));
-                setMessages(parsedMessages);
+                // Prevent race conditions: Ensure we only set messages if the prop hasn't changed while fetching
+                if (activeChatIdRef.current === chatId) {
+                    setMessages(parsedMessages);
+                    setIsLoaded(true);
+                }
+            } else {
+                setIsLoaded(true);
             }
-            setIsLoaded(true);
         };
         fetchChat();
     }, [chatId]);
@@ -66,7 +90,9 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
             timestamp: m.timestamp?.toISOString()
         }));
 
-        if (!chatId && onChatCreated) {
+        const currentChatId = activeChatIdRef.current;
+
+        if (!currentChatId && onChatCreated) {
             const firstUserMsg = newMessages.find(m => m.role === 'user')?.content || 'New Chat';
             const title = firstUserMsg.length > 40 ? firstUserMsg.substring(0, 40) + '...' : firstUserMsg;
             const { data } = await supabase.from('user_chats').insert({
@@ -74,12 +100,16 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                 title,
                 messages: messagesForDb
             }).select().single();
-            if (data) onChatCreated(data.id, data.title);
-        } else if (chatId) {
+            if (data) {
+                // Update refs immediately so the second save handles it as an update
+                activeChatIdRef.current = data.id; 
+                onChatCreated(data.id, data.title);
+            }
+        } else if (currentChatId) {
             await supabase.from('user_chats').update({
                 messages: messagesForDb,
                 updated_at: new Date().toISOString()
-            }).eq('id', chatId);
+            }).eq('id', currentChatId);
         }
     };
 
@@ -101,6 +131,8 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
         
         await saveChatToDb(updatedMessages);
 
+        abortControllerRef.current = new AbortController();
+
         try {
             const response = await fetch("/api/chat", {
                 method: "POST",
@@ -108,6 +140,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                 body: JSON.stringify({ 
                     messages: updatedMessages.map(m => ({ role: m.role, content: m.content, imageUrl: m.imageUrl })) 
                 }),
+                signal: abortControllerRef.current.signal
             });
 
             if (!response.ok) throw new Error("Failed to fetch response");

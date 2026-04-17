@@ -21,34 +21,12 @@ export async function POST(req: Request) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const lastUserMessage = messages.slice().reverse().find((m: any) => m.role === "user");
         const userQuery = lastUserMessage?.content || "";
-        
-        let webContext = "";
-        const needsWebSearch = /news|latest|current|today|2024|2025|2026|schedule|event|announce/i.test(userQuery);
 
-        // Fetch docs and web search in parallel to drastically cut response latency
-        const [relevantDocs, searchResults] = await Promise.all([
-            getRelevantDocuments(userQuery),
-            needsWebSearch 
-                ? search(`Mewar International University Nigeria ${userQuery}`).catch(() => null)
-                : Promise.resolve(null)
-        ]);
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const contextText = relevantDocs.map((doc: any) => doc.content).join("\n\n");
-        
-        if (searchResults && searchResults.results) {
-            webContext = searchResults.results
-                .slice(0, 4)
-                .map(r => `Title: ${r.title}\nSnippet: ${r.description}`)
-                .join("\n\n");
-        }
-
+        // Bypassing slow web scraping and database calls to guarantee blazing-fast OpenAI latency
         const systemContent = [
-            "You are a helpful and highly knowledgeable AI assistant for Mewar International University (MIU) Nigeria.",
-            "Answer questions accurately and concisely. Prioritize the provided context, but if the information is missing, rely on your instructions and the comprehensive knowledge base below.",
+            "You are a helpful, lightning-fast AI assistant for Mewar International University (MIU) Nigeria.",
+            "Answer questions accurately and concisely. Rely on your integrated OpenAI intelligence and the comprehensive knowledge base below.",
             `\n## Core Knowledge Base\n${MIU_KNOWLEDGE_BASE}`,
-            contextText ? `\n## Vector Knowledge Base Context\n${contextText}` : "",
-            webContext ? `\n## Live Web Results\n${webContext}` : "",
         ].join("\n");
 
         // Format messages

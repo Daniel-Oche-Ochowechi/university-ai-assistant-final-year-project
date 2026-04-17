@@ -1,11 +1,49 @@
 import { User, Sparkles, Copy, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+
+function useSmoothTypewriter(text: string, isAssistant: boolean) {
+  const [displayedText, setDisplayedText] = useState(isAssistant ? "" : text);
+
+  useEffect(() => {
+    if (!isAssistant) {
+      setDisplayedText(text);
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      setDisplayedText((prev) => {
+        if (text === prev) {
+          clearInterval(intervalId);
+          return prev;
+        }
+        
+        if (!text.startsWith(prev)) {
+          return "";
+        }
+
+        const remainingLength = text.length - prev.length;
+        if (remainingLength <= 0) {
+          clearInterval(intervalId);
+          return prev;
+        }
+
+        const chunkCount = Math.max(1, Math.ceil(remainingLength / 20));
+        const nextChunk = text.substring(prev.length, prev.length + chunkCount);
+        return prev + nextChunk;
+      });
+    }, 20);
+
+    return () => clearInterval(intervalId);
+  }, [text, isAssistant]);
+
+  return displayedText;
+}
 
 interface MessageBubbleProps {
   role: "user" | "assistant" | "system";
@@ -17,6 +55,7 @@ interface MessageBubbleProps {
 export default function MessageBubble({ role, content, imageUrl, timestamp }: MessageBubbleProps) {
   const isUser = role === "user";
   const [copied, setCopied] = useState(false);
+  const smoothContent = useSmoothTypewriter(content, role === "assistant");
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
@@ -145,7 +184,7 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
                   }
                 }}
               >
-                {content}
+                {smoothContent}
               </ReactMarkdown>
             </div>
 

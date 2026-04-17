@@ -7,6 +7,37 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
+function CodeBlock({ language, code }: { language: string, code: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <div className="relative my-4 group/code w-full overflow-hidden rounded-[20px] shadow-2xl border border-white/[0.05]">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[#050505] border-b border-white/[0.05]">
+        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{language}</span>
+        <button 
+          onClick={handleCopy}
+          className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-500 hover:text-white transition-colors uppercase tracking-wider"
+        >
+          {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+          {copied ? 'Copied' : 'Copy Code'}
+        </button>
+      </div>
+      <SyntaxHighlighter
+        style={oneDark}
+        language={language}
+        PreTag="div"
+        className="!text-[13px] !bg-[#0A0A0A] !m-0 w-full overflow-x-auto custom-scrollbar !py-4 !px-4"
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
+}
+
 function useSmoothTypewriter(text: string, isAssistant: boolean) {
   const [displayedText, setDisplayedText] = useState(isAssistant ? "" : text);
 
@@ -118,23 +149,11 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
                 components={{
                   code({ node, inline, className, children, ...props }: any) {
                     const match = /language-(\w+)/.exec(className || "");
+                    const codeString = String(children).replace(/\n$/, "");
                     return !inline && match ? (
-                      <div className="relative my-4 group/code w-full overflow-hidden rounded-2xl border border-white/[0.1] shadow-2xl">
-                        <div className="absolute top-2 right-2 px-2 py-1 bg-white/10 backdrop-blur-md rounded-md flex items-center gap-2 opacity-0 group-hover/code:opacity-100 transition-opacity z-10 pointer-events-none">
-                            <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest">{match[1]}</span>
-                        </div>
-                        <SyntaxHighlighter
-                          style={oneDark}
-                          language={match[1]}
-                          PreTag="div"
-                          className="!text-[13px] !bg-[#050505] !m-0 w-full overflow-x-auto custom-scrollbar !py-4 !px-5"
-                          {...props}
-                        >
-                          {String(children).replace(/\n$/, "")}
-                        </SyntaxHighlighter>
-                      </div>
+                      <CodeBlock language={match[1]} code={codeString} />
                     ) : (
-                      <code className="bg-white/10 border border-white/5 text-emerald-400 px-1.5 py-0.5 rounded-lg font-mono text-[13px] whitespace-pre-wrap break-words" {...props}>
+                      <code className="bg-black/30 border border-white/5 text-emerald-400 px-1.5 py-0.5 rounded-lg font-mono text-[13px] whitespace-pre-wrap break-words" {...props}>
                         {children}
                       </code>
                     );

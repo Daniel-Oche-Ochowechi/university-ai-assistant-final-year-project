@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import ChatWindow from "@/components/ChatWindow";
 import Auth from "@/components/Auth";
-import { Plus, LogOut, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2 } from "lucide-react";
+import { Plus, LogOut, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2, Edit2 } from "lucide-react";
 import { Session } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,6 +15,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [editingChatId, setEditingChatId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isEmbedModalOpen, setIsEmbedModalOpen] = useState(false);
   const [isApiModalOpen, setIsApiModalOpen] = useState(false);
@@ -150,6 +152,23 @@ export default function Home() {
     }
   };
 
+  const startEditingChat = (id: string, currentTitle: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingChatId(id);
+    setEditingTitle(currentTitle);
+  };
+
+  const handleRenameChat = async (id: string) => {
+    if (!session || !editingTitle.trim()) {
+      setEditingChatId(null);
+      return;
+    }
+    
+    await supabase.from("user_chats").update({ title: editingTitle.trim() }).eq("id", id);
+    setChats(prev => prev.map(c => c.id === id ? { ...c, title: editingTitle.trim() } : c));
+    setEditingChatId(null);
+  };
+
   const SidebarContent = () => (
     <>
       {/* Sidebar Header */}
@@ -199,23 +218,52 @@ export default function Home() {
               chats.map((chat) => (
                 <motion.div layout key={chat.id} className="relative group">
                   <button 
-                    onClick={() => navigateToChat(chat.id)}
+                    onClick={() => {
+                      if (editingChatId !== chat.id) navigateToChat(chat.id);
+                    }}
                     className={`w-full flex items-center gap-3 px-3 py-3 text-[13px] rounded-xl transition-all duration-300 ${
                       activeChatId === chat.id 
-                        ? "bg-white/[0.08] text-white font-semibold pr-10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/5" 
-                        : "text-zinc-500 hover:text-white hover:bg-white/[0.04] pr-10 border border-transparent"
+                        ? "bg-white/[0.08] text-white font-semibold pr-16 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/5" 
+                        : "text-zinc-500 hover:text-white hover:bg-white/[0.04] pr-16 border border-transparent"
                     }`}
                   >
                     <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "text-zinc-600 group-hover:text-zinc-400"}`} />
-                    <span className="truncate flex-1 text-left">{chat.title}</span>
+                    
+                    {editingChatId === chat.id ? (
+                      <input
+                        autoFocus
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        onBlur={() => handleRenameChat(chat.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleRenameChat(chat.id);
+                          if (e.key === 'Escape') setEditingChatId(null);
+                        }}
+                        className="flex-1 bg-black/50 text-white px-2 py-1 rounded border border-white/20 focus:outline-none focus:border-white/50 text-left"
+                      />
+                    ) : (
+                      <span className="truncate flex-1 text-left">{chat.title}</span>
+                    )}
                   </button>
-                  <button
-                    onClick={(e) => handleDeleteChat(chat.id, e)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg opacity-0 group-hover:opacity-100 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:scale-105 transition-all z-10"
-                    title="Delete Chat"
-                  >
-                    <Trash2 size={14} />
-                  </button>
+                  
+                  {editingChatId !== chat.id && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                      <button
+                        onClick={(e) => startEditingChat(chat.id, chat.title, e)}
+                        className="p-2 rounded-lg bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 hover:scale-105 transition-all"
+                        title="Rename Chat"
+                      >
+                        <Edit2 size={13} />
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteChat(chat.id, e)}
+                        className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:scale-105 transition-all"
+                        title="Delete Chat"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               ))
             )}

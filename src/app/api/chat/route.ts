@@ -1,6 +1,4 @@
 import { openai } from "@/lib/openai";
-import { getRelevantDocuments } from "@/lib/vector-search";
-import { search } from "duck-duck-scrape";
 import { MIU_KNOWLEDGE_BASE } from "@/lib/knowledge-base";
 
 // Using Node.js runtime for maximum compatibility with all dependencies
@@ -18,9 +16,6 @@ export async function POST(req: Request) {
             return Response.json({ error: "Messages are required" }, { status: 400 });
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const lastUserMessage = messages.slice().reverse().find((m: any) => m.role === "user");
-        const userQuery = lastUserMessage?.content || "";
 
         // Bypassing slow web scraping and database calls to guarantee blazing-fast OpenAI latency
         const systemContent = [

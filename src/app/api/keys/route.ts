@@ -1,23 +1,19 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import crypto from 'crypto';
+import { auth } from '@clerk/nextjs/server';
 
 export async function GET(request: Request) {
   try {
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
+    const { userId } = await auth();
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { data: keys, error } = await supabase
       .from("api_keys")
       .select("id, name, key, created_at")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -30,13 +26,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
+    const { userId } = await auth();
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -50,7 +41,7 @@ export async function POST(request: Request) {
     const { data, error } = await supabase
       .from("api_keys")
       .insert({
-        user_id: user.id,
+        user_id: userId,
         name,
         key: newKey
       })
@@ -67,13 +58,8 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
+    const { userId } = await auth();
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -86,7 +72,7 @@ export async function DELETE(request: Request) {
       .from("api_keys")
       .delete()
       .eq("id", keyId)
-      .eq("user_id", user.id);
+      .eq("user_id", userId);
 
     if (error) throw error;
 

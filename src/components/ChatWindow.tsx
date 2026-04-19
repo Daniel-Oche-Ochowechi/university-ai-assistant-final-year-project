@@ -5,7 +5,7 @@ import MessageBubble from "./MessageBubble";
 import ChatInput from "./ChatInput";
 import { Sparkles, Brain, Search, Info, X, Menu, Volume2, VolumeX } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { supabase } from "@/lib/supabase";
+import { useClerkSupabaseClient } from "@/lib/supabase";
 
 export type Message = {
     role: "user" | "assistant" | "system" | "tool";
@@ -24,6 +24,7 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle }: ChatWindowProps) {
+    const supabase = useClerkSupabaseClient();
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isThinking, setIsThinking] = useState(false);

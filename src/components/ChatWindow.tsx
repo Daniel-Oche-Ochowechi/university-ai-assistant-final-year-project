@@ -299,6 +299,13 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                                         timestamp={msg.timestamp}
                                     />
                                 ))}
+                                {isLoading && messages[messages.length - 1]?.role === "user" && (
+                                    <MessageBubble
+                                        role="assistant"
+                                        content=""
+                                        isThinkingBubble={true}
+                                    />
+                                )}
                             </AnimatePresence>
                         )}
                         <div ref={messagesEndRef} className="h-20" />
@@ -314,50 +321,6 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                 </div>
             </div>
 
-            {/* Thought Sidebar (Optional / Desktop only mostly) */}
-            <AnimatePresence>
-                {(isThinking || (thinkingText && showThoughts)) && (
-                    <motion.aside
-                        initial={{ opacity: 0, x: 320 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 320 }}
-                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="hidden lg:flex flex-col w-[350px] bg-[#0A0A0A]/90 backdrop-blur-3xl border-l border-white/[0.04] relative z-30"
-                    >
-                        <div className="absolute top-0 right-0 w-full h-full bg-zinc-800/[0.02] pointer-events-none" />
-                        
-                        <div className="p-5 border-b border-white/[0.04] flex items-center justify-between relative">
-                            <div className="flex items-center gap-3">
-                                <h3 className="font-bold text-xs uppercase tracking-widest text-zinc-400">Internal Reasoning</h3>
-                            </div>
-                            <button 
-                                onClick={() => setShowThoughts(false)}
-                                className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-zinc-500"
-                            >
-                                <X size={14} />
-                            </button>
-                        </div>
-
-                        <div className="flex-1 overflow-y-auto p-5 space-y-6 relative">
-                            {/* Synthesis Log */}
-                            <div className="flex gap-4">
-                                <div className="flex flex-col items-center">
-                                    <div className="w-1.5 h-1.5 bg-white rounded-full mt-1 blur-[1px] animate-pulse" />
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Thoughts</p>
-                                    <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4 overflow-hidden transition-all duration-500 shadow-inner">
-                                        <p className="text-[12px] leading-relaxed text-zinc-400 font-mono opacity-80 whitespace-pre-wrap">
-                                            {thinkingText || "Developing optimal response pattern..."}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </motion.aside>
-                )}
-            </AnimatePresence>
         </div>
     );
 }

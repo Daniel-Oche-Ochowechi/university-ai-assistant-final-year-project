@@ -132,8 +132,10 @@ export default function Home() {
   }
 
   const navigateToChat = (id: string | null) => {
-    setActiveChatId(id);
     setIsSidebarOpen(false); // Close mobile sidebar on select
+    // Small delay to allow the sidebar exit animation to finish smoothly
+    // before triggering a heavy ChatWindow remount/fetch component
+    setTimeout(() => setActiveChatId(id), 100);
   };
 
   const handleDeleteChat = async (id: string, e: React.MouseEvent) => {
@@ -342,7 +344,7 @@ export default function Home() {
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
             className="md:hidden fixed top-0 bottom-0 left-0 w-[80%] max-w-[300px] border-r border-white/[0.04] bg-[#0A0A0A] p-5 z-50 flex flex-col shadow-2xl"
           >
             <SidebarContent />

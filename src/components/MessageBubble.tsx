@@ -81,12 +81,37 @@ interface MessageBubbleProps {
   content: string;
   imageUrl?: string;
   timestamp?: Date;
+  isThinkingBubble?: boolean;
 }
 
-export default function MessageBubble({ role, content, imageUrl, timestamp }: MessageBubbleProps) {
+function ThinkingAnimation() {
+   const [text, setText] = useState("Thinking");
+
+   useEffect(() => {
+     const timer = setTimeout(() => {
+       setText("Processing");
+     }, 1500);
+     return () => clearTimeout(timer);
+   }, []);
+
+   return (
+      <div className="flex items-center gap-3 h-6 px-1">
+        <div className="flex gap-1.5">
+          <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5], y: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 1, delay: 0 }} className="w-2 h-2 rounded-full bg-indigo-400" />
+          <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5], y: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-2 h-2 rounded-full bg-purple-400" />
+          <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5], y: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-2 h-2 rounded-full bg-pink-400" />
+        </div>
+        <span className="text-[12px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 uppercase tracking-widest animate-pulse">
+          {text}
+        </span>
+      </div>
+   );
+}
+
+export default function MessageBubble({ role, content, imageUrl, timestamp, isThinkingBubble }: MessageBubbleProps) {
   const isUser = role === "user";
   const [copied, setCopied] = useState(false);
-  const smoothContent = useSmoothTypewriter(content, role === "assistant");
+  const smoothContent = useSmoothTypewriter(content, role === "assistant" && !isThinkingBubble);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
@@ -134,10 +159,15 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
               "px-5 py-4 text-[14px] sm:text-[15px] leading-relaxed tracking-wide font-medium relative group transition-all",
               isUser
                 ? "bg-gradient-to-br from-white to-zinc-300 text-black rounded-[28px] rounded-br-[8px] shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
-                : "bg-white/[0.04] backdrop-blur-md text-zinc-200 rounded-[28px] rounded-bl-[8px] border border-white/[0.08] shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+                : "bg-white/[0.04] backdrop-blur-md text-zinc-200 rounded-[28px] rounded-bl-[8px] border border-white/[0.08] shadow-[0_8px_30px_rgba(0,0,0,0.5)]",
+              isThinkingBubble ? "min-w-[140px]" : ""
             )}
           >
-            {imageUrl && (
+            {isThinkingBubble ? (
+              <ThinkingAnimation />
+            ) : (
+              <>
+                {imageUrl && (
               <div className="mb-4 overflow-hidden rounded-xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={imageUrl} alt="Uploaded content" className="w-full max-w-[300px] h-auto object-cover shadow-sm border border-black/5" />
@@ -200,7 +230,7 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
 
             {/* Quick Actions (Copy) */}
             <AnimatePresence>
-                {!isUser && (
+                {!isUser && !isThinkingBubble && (
                     <motion.button
                         initial={{ opacity: 0, scale: 0.8 }}
                         whileHover={{ scale: 1.1 }}
@@ -213,6 +243,8 @@ export default function MessageBubble({ role, content, imageUrl, timestamp }: Me
                     </motion.button>
                 )}
             </AnimatePresence>
+              </>
+            )}
           </div>
 
           {/* Minimal Metadata */}

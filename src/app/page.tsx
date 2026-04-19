@@ -67,6 +67,10 @@ export default function Home() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      const savedChatId = localStorage.getItem('activeChatId');
+      if (savedChatId) {
+        setActiveChatId(savedChatId);
+      }
       setLoading(false);
     });
 
@@ -135,7 +139,14 @@ export default function Home() {
     setIsSidebarOpen(false); // Close mobile sidebar on select
     // Small delay to allow the sidebar exit animation to finish smoothly
     // before triggering a heavy ChatWindow remount/fetch component
-    setTimeout(() => setActiveChatId(id), 100);
+    setTimeout(() => {
+        setActiveChatId(id);
+        if (id) {
+            localStorage.setItem('activeChatId', id);
+        } else {
+            localStorage.removeItem('activeChatId');
+        }
+    }, 100);
   };
 
   const handleDeleteChat = async (id: string, e: React.MouseEvent) => {
@@ -332,7 +343,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            className="md:hidden fixed inset-0 z-40 bg-black/80"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
@@ -345,7 +356,7 @@ export default function Home() {
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
-            className="md:hidden fixed top-0 bottom-0 left-0 w-[80%] max-w-[300px] border-r border-white/[0.04] bg-[#0A0A0A] p-5 z-50 flex flex-col shadow-2xl"
+            className="md:hidden fixed top-0 bottom-0 left-0 w-[80%] max-w-[300px] border-r border-white/[0.04] bg-[#0A0A0A] p-5 z-50 flex flex-col shadow-2xl will-change-transform"
           >
             <SidebarContent />
           </motion.aside>

@@ -36,6 +36,12 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
     const abortControllerRef = useRef<AbortController | null>(null);
 
     useEffect(() => {
+        // Prevent aborting an ongoing first request when the newly saved chat ID propagates down
+        if (activeChatIdRef.current === chatId && chatId !== null) {
+            setIsLoaded(true);
+            return;
+        }
+
         setIsLoaded(false);
 
         if (abortControllerRef.current) {
@@ -51,12 +57,6 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
             setThinkingText("");
             setIsLoaded(true);
             activeChatIdRef.current = null;
-            return;
-        }
-
-        // Avoid refetching if we already know this chat internally (just created it)
-        if (activeChatIdRef.current === chatId && messages.length > 1) {
-            setIsLoaded(true);
             return;
         }
 

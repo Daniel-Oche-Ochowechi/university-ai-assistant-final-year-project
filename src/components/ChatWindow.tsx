@@ -239,24 +239,24 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
         <div className="flex w-full h-full relative overflow-hidden bg-transparent">
 
             {/* Main Chat */}
-            <div className="flex-1 flex flex-col min-w-0 border-r border-white/[0.04]">
+            <div className="flex-1 flex flex-col min-w-0 border-r border-[#1c1917]/5">
                 
                 {/* Minimal Header */}
-                <header className="px-5 md:px-8 py-4 border-b border-white/[0.04] bg-black/40 backdrop-blur-[40px] flex items-center justify-between z-20">
+                <header className="px-5 md:px-8 py-4 border-b border-[#1c1917]/5 bg-white/60 backdrop-blur-[40px] flex items-center justify-between z-20 shadow-sm">
                     <div className="flex items-center gap-4">
                         {/* Mobile Menu Button */}
                         <button 
                             onClick={onMenuToggle}
-                            className="md:hidden p-2 -ml-2 rounded-xl text-white/70 hover:bg-white/10 transition-colors"
+                            className="md:hidden p-2 -ml-2 rounded-xl text-zinc-600 hover:bg-black/5 transition-colors"
                         >
                             <Menu size={22} />
                         </button>
-                        <div className="hidden md:flex p-2.5 rounded-[14px] bg-gradient-to-br from-cyan-400 to-blue-600 shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-white/20">
-                            <Sparkles className="text-white drop-shadow-md" size={16} />
+                        <div className="hidden md:flex p-2.5 rounded-[14px] bg-gradient-to-br from-rose-500 to-red-600 shadow-[0_0_20px_rgba(225,29,72,0.3)] border border-white/40">
+                            <Sparkles className="text-white drop-shadow-sm" size={16} />
                         </div>
                         <div>
-                            <h1 className="text-[15px] font-bold text-white tracking-tight drop-shadow-sm">MIU AI Assistant</h1>
-                            <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mt-0.5 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">Mewar University</p>
+                            <h1 className="text-[15px] font-bold text-[#1c1917] tracking-tight">MIU AI Assistant</h1>
+                            <p className="text-[10px] text-rose-600 font-bold uppercase tracking-widest mt-0.5">Mewar University</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -265,7 +265,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                                 setAutoSpeak(!autoSpeak);
                                 if (autoSpeak) window.speechSynthesis.cancel();
                             }}
-                            className="p-1.5 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-black/5 text-zinc-400 hover:text-[#1c1917] transition-colors"
                             title={autoSpeak ? "Disable Voice Feedback" : "Enable Voice Feedback"}
                         >
                             {autoSpeak ? <Volume2 size={16} /> : <VolumeX size={16} />}
@@ -274,9 +274,9 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                             <motion.div 
                                 initial={{ opacity: 0, x: 10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400 flex items-center gap-2 uppercase tracking-widest backdrop-blur-md shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+                                className="px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-[10px] font-bold text-rose-600 flex items-center gap-2 uppercase tracking-widest backdrop-blur-md shadow-sm"
                             >
-                                <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                                <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(225,29,72,0.8)]" />
                                 Processing
                             </motion.div>
                          )}
@@ -287,7 +287,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                     <div className="max-w-3xl mx-auto w-full">
                         {!isLoaded ? (
                              <div className="flex items-center justify-center h-40">
-                                <Loader2 size={24} className="animate-spin text-white/30" />
+                                <Loader2 size={24} className="animate-spin text-rose-500/30" />
                              </div>
                         ) : (
                             <AnimatePresence mode="popLayout" initial={false}>
@@ -313,7 +313,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                     </div>
                 </main>
 
-                <div className="bg-gradient-to-t from-black via-black to-transparent pt-12 pb-4 md:pb-6 relative z-10 w-full">
+                <div className="bg-gradient-to-t from-[#fdfbf7] via-[#fdfbf7] to-transparent pt-12 pb-4 md:pb-6 relative z-10 w-full">
                     <ChatInput
                         onSendMessage={handleSendMessage}
                         onClearChat={clearChat}

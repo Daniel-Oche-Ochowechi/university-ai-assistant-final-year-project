@@ -16,11 +16,11 @@ function CodeBlock({ language, code }: { language: string, code: string }) {
   };
   return (
     <div className="relative my-4 group/code w-full overflow-hidden rounded-[20px] shadow-2xl border border-white/[0.05]">
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#050505] border-b border-white/[0.05]">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[#292524] border-b border-white/[0.05]">
         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{language}</span>
         <button 
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-500 hover:text-white transition-colors uppercase tracking-wider"
+          className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-400 hover:text-white transition-colors uppercase tracking-wider"
         >
           {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
           {copied ? 'Copied' : 'Copy Code'}
@@ -50,11 +50,11 @@ function ThinkingAnimation() {
    return (
       <div className="flex items-center gap-3 h-6 px-2">
         <div className="flex gap-1.5">
-          <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-          <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
-          <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.4 }} className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
+          <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.6)]" />
+          <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
+          <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.4 }} className="w-1.5 h-1.5 rounded-full bg-rose-600 shadow-[0_0_8px_rgba(225,29,72,0.6)]" />
         </div>
-        <span className="text-[11px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 uppercase tracking-widest animate-pulse">
+        <span className="text-[11px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-red-500 to-rose-600 uppercase tracking-widest animate-pulse">
           Processing
         </span>
       </div>
@@ -90,12 +90,12 @@ const MessageBubble = React.memo(({ role, content, imageUrl, timestamp, isThinki
         {/* Minimal Avatar */}
         <div className="flex-shrink-0 mt-1 relative hidden sm:block">
           {isUser ? (
-            <div className="h-9 w-9 rounded-[14px] bg-gradient-to-br from-indigo-500/20 to-purple-500/10 border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md">
-              <User size={15} className="text-zinc-300" />
+            <div className="h-9 w-9 rounded-[14px] bg-rose-50 border border-rose-100 flex items-center justify-center shadow-sm">
+              <User size={15} className="text-rose-500" />
             </div>
           ) : (
-            <div className="h-9 w-9 rounded-[14px] bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)] ring-1 ring-white/20">
-              <Sparkles size={16} className="text-white drop-shadow-md" />
+            <div className="h-9 w-9 rounded-[14px] bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center shadow-[0_0_20px_rgba(225,29,72,0.3)] ring-1 ring-white/40">
+              <Sparkles size={16} className="text-white drop-shadow-sm" />
             </div>
           )}
         </div>
@@ -108,11 +108,11 @@ const MessageBubble = React.memo(({ role, content, imageUrl, timestamp, isThinki
           
           <div
             className={cn(
-              "px-5 py-4 text-[14.5px] sm:text-[15px] leading-relaxed tracking-wide font-medium relative transition-all w-full min-w-0 break-words shadow-2xl",
+              "px-5 py-4 text-[14.5px] sm:text-[15px] leading-relaxed tracking-wide font-medium relative transition-all w-full min-w-0 break-words shadow-sm",
               isUser
-                ? "bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-[24px] rounded-tr-[8px] shadow-[0_10px_40px_rgba(79,70,229,0.3)] border border-white/10"
-                : "bg-white/[0.02] backdrop-blur-3xl text-zinc-100 rounded-[24px] rounded-tl-[8px] border border-white/[0.08] shadow-[0_10px_50px_rgba(0,0,0,0.5)] ring-1 ring-inset ring-white/[0.02]",
-              isThinkingBubble ? "w-auto max-w-[180px] bg-transparent border-white/5 backdrop-blur-lg shadow-none ring-0" : ""
+                ? "bg-gradient-to-br from-rose-500 to-red-600 text-white rounded-[24px] rounded-tr-[8px] shadow-[0_10px_30px_rgba(225,29,72,0.2)] border border-rose-400/20"
+                : "bg-white text-[#1c1917] rounded-[24px] rounded-tl-[8px] border border-[#1c1917]/5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] ring-1 ring-inset ring-[#1c1917]/[0.02]",
+              isThinkingBubble ? "w-auto max-w-[180px] bg-white border border-[#1c1917]/5 shadow-sm ring-0" : ""
             )}
           >
             {isThinkingBubble ? (
@@ -135,7 +135,7 @@ const MessageBubble = React.memo(({ role, content, imageUrl, timestamp, isThinki
                     return !inline && match ? (
                       <CodeBlock language={match[1]} code={codeString} />
                     ) : (
-                      <code className="bg-black/40 border border-white/10 text-cyan-400 px-1.5 py-0.5 rounded-md font-mono text-[13px] whitespace-pre-wrap break-words" {...props}>
+                      <code className="bg-[#1c1917]/5 border border-[#1c1917]/10 text-rose-600 px-1.5 py-0.5 rounded-md font-mono text-[13px] whitespace-pre-wrap break-words" {...props}>
                         {children}
                       </code>
                     );
@@ -148,31 +148,31 @@ const MessageBubble = React.memo(({ role, content, imageUrl, timestamp, isThinki
                     );
                   },
                   ul({children}) {
-                    return <ul className="list-disc pl-5 mb-4 space-y-2 opacity-90 marker:text-cyan-500/70">{children}</ul>;
+                    return <ul className="list-disc pl-5 mb-4 space-y-2 opacity-90 marker:text-rose-500/70">{children}</ul>;
                   },
                   ol({children}) {
-                    return <ol className="list-decimal pl-5 mb-4 space-y-2 opacity-90 marker:text-cyan-500/70">{children}</ol>;
+                    return <ol className="list-decimal pl-5 mb-4 space-y-2 opacity-90 marker:text-rose-500/70">{children}</ol>;
                   },
                   li({children}) {
                     return <li className="pl-1">{children}</li>;
                   },
                   strong({children}) {
-                    return <strong className="font-semibold text-white drop-shadow-sm">{children}</strong>;
+                    return <strong className="font-semibold text-current drop-shadow-sm">{children}</strong>;
                   },
                   a({children, href}) {
-                    return <a href={href} className="text-cyan-400 font-medium hover:text-cyan-300 underline underline-offset-4 transition-colors" target="_blank" rel="noopener noreferrer">{children}</a>
+                    return <a href={href} className="text-rose-500 font-medium hover:text-rose-400 underline underline-offset-4 transition-colors" target="_blank" rel="noopener noreferrer">{children}</a>
                   },
                   h1({children}) {
-                    return <h1 className="text-xl font-bold text-white mb-4 mt-6 tracking-tight drop-shadow-md">{children}</h1>;
+                    return <h1 className="text-xl font-bold text-current mb-4 mt-6 tracking-tight drop-shadow-sm">{children}</h1>;
                   },
                   h2({children}) {
-                    return <h2 className="text-lg font-bold text-white mb-3 mt-5 tracking-tight drop-shadow-sm">{children}</h2>;
+                    return <h2 className="text-lg font-bold text-current mb-3 mt-5 tracking-tight drop-shadow-sm">{children}</h2>;
                   },
                   h3({children}) {
-                    return <h3 className="text-base font-bold text-white mb-2 mt-4 tracking-tight">{children}</h3>;
+                    return <h3 className="text-base font-bold text-current mb-2 mt-4 tracking-tight">{children}</h3>;
                   },
                   blockquote({children}) {
-                    return <blockquote className="border-l-[3px] border-cyan-500/50 pl-4 py-1.5 my-4 bg-cyan-500/5 rounded-r-xl italic text-zinc-300">{children}</blockquote>;
+                    return <blockquote className="border-l-[3px] border-rose-500/50 pl-4 py-1.5 my-4 bg-rose-500/5 rounded-r-xl italic text-[#1c1917]/70">{children}</blockquote>;
                   }
                 }}
               >
@@ -185,13 +185,13 @@ const MessageBubble = React.memo(({ role, content, imageUrl, timestamp, isThinki
                 {!isUser && !isThinkingBubble && (
                     <motion.button
                         initial={{ opacity: 0, scale: 0.8 }}
-                        whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.15)' }}
+                        whileHover={{ scale: 1.1, backgroundColor: 'rgba(0,0,0,0.05)' }}
                         whileTap={{ scale: 0.9 }}
                         animate={{ opacity: 1 }}
                         onClick={handleCopy}
-                        className="absolute -right-12 top-2 p-2 rounded-xl bg-white/[0.05] backdrop-blur-md border border-white/10 text-zinc-400 hover:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-xl"
+                        className="absolute -right-12 top-2 p-2 rounded-xl bg-white border border-[#1c1917]/10 text-zinc-400 hover:text-[#1c1917] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-sm"
                     >
-                        {copied ? <Check size={14} className="text-cyan-400" /> : <Copy size={14} />}
+                        {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
                     </motion.button>
                 )}
             </AnimatePresence>

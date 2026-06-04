@@ -18,6 +18,7 @@ export default function Home() {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
+  const [showSignIn, setShowSignIn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isEmbedModalOpen, setIsEmbedModalOpen] = useState(false);
   const [isApiModalOpen, setIsApiModalOpen] = useState(false);
@@ -164,12 +165,12 @@ export default function Home() {
     <>
       <div className="flex items-center justify-between pb-8 pt-4 px-2">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-[14px] bg-gradient-to-br from-cyan-400 to-blue-600 text-white flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-white/20">
-            <Command size={20} strokeWidth={2.5} className="text-white drop-shadow-md" />
+          <div className="w-10 h-10 rounded-[14px] bg-gradient-to-br from-rose-500 to-red-700 text-white flex items-center justify-center shadow-[0_0_20px_rgba(225,29,72,0.3)] border border-white/40">
+            <Command size={20} strokeWidth={2.5} className="text-white drop-shadow-sm" />
           </div>
           <div>
-            <h1 className="font-extrabold text-[15px] leading-none tracking-tight text-white drop-shadow-md">MIU AI Assistant</h1>
-            <p className="text-[9px] text-zinc-400 font-bold tracking-[0.2em] uppercase mt-1.5">Official AI</p>
+            <h1 className="font-extrabold text-[15px] leading-none tracking-tight text-[#1c1917]">MIU AI Assistant</h1>
+            <p className="text-[9px] text-zinc-500 font-bold tracking-[0.2em] uppercase mt-1.5">Official AI</p>
           </div>
         </div>
         
@@ -183,9 +184,9 @@ export default function Home() {
 
       <button 
         onClick={() => navigateToChat(null)}
-        className="w-full flex items-center justify-center gap-2 px-4 py-4 mb-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[13px] font-bold rounded-2xl transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:shadow-[0_0_30px_rgba(255,255,255,0.08)] hover:scale-[1.02] group active:scale-[0.98] backdrop-blur-md"
+        className="w-full flex items-center justify-center gap-2 px-4 py-4 mb-8 bg-white border border-[#1c1917]/5 hover:border-red-500/20 hover:bg-rose-50/50 text-[#1c1917] text-[13px] font-bold rounded-2xl transition-all duration-300 shadow-sm hover:shadow-[0_4px_20px_rgba(225,29,72,0.1)] hover:scale-[1.02] group active:scale-[0.98]"
       >
-        <Plus size={16} strokeWidth={3} className="text-cyan-400 transition-transform duration-300 group-hover:rotate-90 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+        <Plus size={16} strokeWidth={3} className="text-rose-600 transition-transform duration-300 group-hover:rotate-90" />
         Start New Conversation
       </button>
 
@@ -210,11 +211,11 @@ export default function Home() {
                     }}
                     className={`w-full flex items-center gap-3 px-3 py-3 text-[13px] rounded-xl transition-all duration-300 ${
                       activeChatId === chat.id 
-                        ? "bg-cyan-500/10 text-cyan-50 font-semibold pr-16 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-cyan-500/20" 
-                        : "text-zinc-500 hover:text-white hover:bg-white/[0.04] pr-16 border border-transparent"
+                        ? "bg-rose-50 text-rose-700 font-semibold pr-16 shadow-[inset_0_1px_1px_rgba(255,255,255,1)] border border-rose-200" 
+                        : "text-zinc-500 hover:text-[#1c1917] hover:bg-black/[0.03] pr-16 border border-transparent"
                     }`}
                   >
-                    <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" : "text-zinc-600 group-hover:text-zinc-400"}`} />
+                    <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-rose-500" : "text-zinc-400 group-hover:text-zinc-600"}`} />
                     
                     {editingChatId === chat.id ? (
                       <input
@@ -226,7 +227,7 @@ export default function Home() {
                           if (e.key === 'Enter') handleRenameChat(chat.id);
                           if (e.key === 'Escape') setEditingChatId(null);
                         }}
-                        className="flex-1 bg-black/50 text-white px-2 py-1 rounded border border-white/20 focus:outline-none focus:border-white/50 text-left"
+                        className="flex-1 bg-white text-[#1c1917] px-2 py-1 rounded border border-[#1c1917]/10 focus:outline-none focus:border-rose-400 text-left"
                       />
                     ) : (
                       <span className="truncate flex-1 text-left">{chat.title}</span>
@@ -259,7 +260,7 @@ export default function Home() {
       </div>
 
       <div className="pt-6 mt-6 pb-4">
-        <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/[0.08] rounded-[24px] p-4 flex flex-col gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+        <div className="bg-white backdrop-blur-3xl border border-[#1c1917]/5 rounded-[24px] p-4 flex flex-col gap-4 shadow-sm">
           <div className="flex items-center gap-3">
             <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9" } }} />
             <div className="flex-1 min-w-0">
@@ -270,14 +271,14 @@ export default function Home() {
           <div className="flex gap-2">
             <button 
               onClick={() => setIsApiModalOpen(true)}
-              className="flex-shrink-0 flex items-center justify-center gap-2 px-3 py-2 text-[11px] font-bold text-white bg-white/[0.06] hover:bg-white/15 rounded-xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
+              className="flex-shrink-0 flex items-center justify-center gap-2 px-3 py-2 text-[11px] font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 hover:text-zinc-900 rounded-xl transition-all shadow-sm"
               title="Developer API"
             >
               <Key size={12} />
             </button>
             <button 
               onClick={() => setIsEmbedModalOpen(true)}
-              className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-bold text-white bg-white/[0.06] hover:bg-white/15 rounded-xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
+              className="flex-1 flex items-center justify-center gap-2 px-2 py-2 text-[11px] font-bold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 hover:text-zinc-900 rounded-xl transition-all shadow-sm"
             >
               <Code size={12} /> Integrate
             </button>
@@ -288,25 +289,79 @@ export default function Home() {
   );
 
   if (isLoaded && !user) {
+    if (showSignIn) {
+      return (
+        <div className="flex bg-[#fdfbf7] h-screen w-full items-center justify-center relative overflow-hidden">
+          <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-gradient-to-bl from-rose-500/20 via-red-500/10 to-transparent pointer-events-none z-0 blur-[100px] rounded-full" />
+          <div className="absolute bottom-[20%] left-[10%] w-[600px] h-[600px] bg-gradient-to-tr from-red-600/20 via-orange-500/10 to-transparent pointer-events-none z-0 blur-[120px] rounded-full" />
+          <SignIn routing="hash" />
+        </div>
+      );
+    }
+
     return (
-      <div className="flex bg-black h-screen w-full items-center justify-center relative overflow-hidden">
-        <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-gradient-to-bl from-cyan-500/20 via-blue-500/10 to-transparent pointer-events-none z-0 blur-[100px] rounded-full" />
-        <div className="absolute bottom-[20%] left-[10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 via-indigo-500/10 to-transparent pointer-events-none z-0 blur-[120px] rounded-full" />
-        <SignIn routing="hash" />
+      <div className="min-h-screen bg-[#fdfbf7] flex flex-col relative overflow-hidden font-sans text-[#1c1917]">
+        {/* Ambient Background */}
+        <div className="absolute top-[10%] right-[5%] w-[600px] h-[600px] bg-gradient-to-bl from-rose-400/20 via-red-300/10 to-transparent pointer-events-none z-0 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[10%] left-[5%] w-[600px] h-[600px] bg-gradient-to-tr from-red-500/15 via-rose-300/10 to-transparent pointer-events-none z-0 blur-[140px] rounded-full" />
+
+        {/* Navbar */}
+        <nav className="w-full px-8 py-6 flex items-center justify-between z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[14px] bg-gradient-to-br from-rose-500 to-red-700 text-white flex items-center justify-center shadow-[0_0_20px_rgba(225,29,72,0.3)]">
+              <Command size={20} strokeWidth={2.5} />
+            </div>
+            <span className="font-extrabold text-[18px] tracking-tight">MIU AI</span>
+          </div>
+          <button 
+            onClick={() => setShowSignIn(true)}
+            className="px-6 py-2.5 rounded-full bg-white border border-[#1c1917]/10 text-[13px] font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+          >
+            Sign In
+          </button>
+        </nav>
+
+        {/* Hero Section */}
+        <main className="flex-1 flex flex-col items-center justify-center px-6 z-10 text-center max-w-5xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 text-rose-600 text-[11px] font-bold uppercase tracking-widest mb-8 border border-red-500/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+              Mewar University Official
+            </div>
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
+              The Next Generation of <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-red-800">Campus Intelligence.</span>
+            </h1>
+            <p className="text-lg md:text-xl text-[#1c1917]/60 max-w-2xl mx-auto mb-10 font-medium">
+              Experience the smartest, fastest, and most elegant AI assistant ever built for Mewar University. Get instant answers, analyze data, and manage your campus life seamlessly.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button 
+                onClick={() => setShowSignIn(true)}
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-bold shadow-[0_10px_30px_rgba(225,29,72,0.3)] hover:shadow-[0_10px_40px_rgba(225,29,72,0.4)] hover:-translate-y-1 transition-all"
+              >
+                Get Started Free
+              </button>
+            </div>
+          </motion.div>
+        </main>
       </div>
     );
   }
 
   return (
     <>
-      <div className="flex w-full h-[100dvh] overflow-hidden bg-[#000000] text-zinc-100 font-sans selection:bg-white/20 relative z-0">
+      <div className="flex w-full h-[100dvh] overflow-hidden bg-[#fdfbf7] text-[#1c1917] font-sans selection:bg-rose-500/20 relative z-0">
 
           <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-            <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-cyan-500/10 blur-[150px] rounded-full" />
-            <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] bg-blue-500/10 blur-[150px] rounded-full" />
+            <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-rose-400/20 blur-[150px] rounded-full" />
+            <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] bg-red-400/10 blur-[150px] rounded-full" />
           </div>
 
-          <aside className="hidden md:flex flex-col w-[320px] border-r border-white/[0.08] bg-black/40 backdrop-blur-[60px] p-6 shrink-0 z-10 relative shadow-[10px_0_50px_rgba(0,0,0,0.5)]">
+          <aside className="hidden md:flex flex-col w-[320px] border-r border-[#1c1917]/5 bg-white/70 backdrop-blur-[60px] p-6 shrink-0 z-10 relative shadow-[10px_0_50px_rgba(0,0,0,0.02)]">
             <SidebarContent />
           </aside>
 
@@ -329,7 +384,7 @@ export default function Home() {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
-                className="md:hidden fixed top-0 bottom-0 left-0 w-[80%] max-w-[300px] border-r border-white/[0.04] bg-[#0A0A0A] p-5 z-50 flex flex-col shadow-2xl will-change-transform"
+                className="md:hidden fixed top-0 bottom-0 left-0 w-[80%] max-w-[300px] border-r border-[#1c1917]/5 bg-[#fdfbf7] p-5 z-50 flex flex-col shadow-2xl will-change-transform"
               >
                 <SidebarContent />
               </motion.aside>

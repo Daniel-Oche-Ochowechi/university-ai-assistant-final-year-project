@@ -129,7 +129,7 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                         <img src={imagePreview} alt="Upload preview" className="h-20 w-auto rounded-xl object-cover border border-white/10 shadow-lg" />
                         <button 
                             onClick={removeImage}
-                            className="absolute -top-2 -right-2 p-1 bg-zinc-800 border border-white/20 rounded-full text-white hover:bg-zinc-700 transition-colors shadow-xl"
+                            className="absolute -top-2 -right-2 p-1 bg-white border border-[#1c1917]/10 rounded-full text-[#1c1917] hover:bg-zinc-100 transition-colors shadow-sm"
                         >
                             <X size={12} />
                         </button>
@@ -141,9 +141,9 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                    "relative flex items-end gap-2 bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[32px] p-2 pl-4 transition-all duration-500 z-10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-inset ring-white/[0.02]",
-                    isFocused ? "border-cyan-500/30 shadow-[0_0_40px_rgba(34,211,238,0.15)] bg-black/60 ring-cyan-500/20" : "",
-                    isRecording ? "border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.2)] bg-black/60 ring-red-500/20" : ""
+                    "relative flex items-end gap-2 bg-white backdrop-blur-3xl border border-[#1c1917]/5 rounded-[32px] p-2 pl-4 transition-all duration-500 z-10 shadow-sm ring-1 ring-inset ring-[#1c1917]/[0.02]",
+                    isFocused ? "border-rose-500/30 shadow-[0_0_40px_rgba(225,29,72,0.15)] bg-white ring-rose-500/20" : "",
+                    isRecording ? "border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.2)] bg-white ring-red-500/20" : ""
                 )}
             >
 
@@ -151,7 +151,7 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 <div className="flex gap-1 mb-2.5 shrink-0">
                     <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="p-2 rounded-full text-zinc-500 hover:text-white hover:bg-white/10 transition-colors"
+                        className="p-2 rounded-full text-zinc-400 hover:text-[#1c1917] hover:bg-black/5 transition-colors"
                         title="Upload Image"
                         disabled={isLoading}
                     >
@@ -170,8 +170,8 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                         className={cn(
                             "p-2 rounded-full transition-all duration-300",
                             isRecording 
-                                ? "text-red-400 bg-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.4)] animate-pulse" 
-                                : "text-zinc-500 hover:text-white hover:bg-white/10"
+                                ? "text-red-500 bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse" 
+                                : "text-zinc-400 hover:text-[#1c1917] hover:bg-black/5"
                         )}
                         title="Voice Dictation"
                     >
@@ -188,7 +188,7 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         placeholder={isRecording ? "Listening to your voice..." : "Message MIU AI..."}
-                        className="w-full max-h-[200px] resize-none bg-transparent text-white placeholder:text-zinc-500 focus:outline-none py-3 shrink font-medium text-[15px] leading-relaxed scrollbar-hide selection:bg-white/20"
+                        className="w-full max-h-[200px] resize-none bg-transparent text-[#1c1917] placeholder:text-zinc-400 focus:outline-none py-3 shrink font-medium text-[15px] leading-relaxed scrollbar-hide selection:bg-rose-500/20"
                         rows={1}
                         disabled={isLoading}
                     />
@@ -203,7 +203,7 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                                 exit={{ opacity: 0, scale: 0.5, rotate: 45 }}
                                 onClick={() => setInput("")}
                                 type="button"
-                                className="p-3 rounded-full text-zinc-500 hover:text-white hover:bg-white/10 transition-all duration-300"
+                                className="p-3 rounded-full text-zinc-400 hover:text-[#1c1917] hover:bg-black/5 transition-all duration-300"
                                 title="Clear Draft"
                             >
                                 <Eraser size={18} />
@@ -217,8 +217,8 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                         className={cn(
                             "w-10 h-10 rounded-full transition-all duration-500 flex items-center justify-center relative overflow-hidden group z-20",
                             (input.trim() || imagePreview) && !isLoading
-                                ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:scale-105 active:scale-95"
-                                : "bg-white/5 text-zinc-600 border border-white/[0.05]"
+                                ? "bg-gradient-to-r from-rose-500 to-red-600 text-white shadow-[0_0_20px_rgba(225,29,72,0.4)] hover:scale-105 active:scale-95"
+                                : "bg-zinc-100 text-zinc-400 border border-zinc-200"
                         )}
                     >
                         <ArrowUp size={20} strokeWidth={3} className="relative z-10 transition-transform duration-300" />
@@ -233,8 +233,8 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 className="flex items-center justify-center mt-3"
             >
                 <div className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
-                    <Sparkles size={11} className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                    <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-zinc-300 to-zinc-500 uppercase tracking-widest pl-1">
+                    <Sparkles size={11} className="text-rose-500 drop-shadow-[0_0_8px_rgba(225,29,72,0.4)]" />
+                    <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-500 uppercase tracking-widest pl-1">
                         MIU AI Assistant V2.1
                     </span>
                 </div>

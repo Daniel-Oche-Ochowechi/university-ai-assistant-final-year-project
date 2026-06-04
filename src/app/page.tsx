@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useClerkSupabaseClient } from "@/lib/supabase";
 import ChatWindow from "@/components/ChatWindow";
-import { Plus, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2, Edit2, Brain, ImageIcon, Mic } from "lucide-react";
+import { Plus, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2, Edit2, Brain, ImageIcon, Mic, Zap, Shield, Sparkles, Globe, Laptop, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SignIn, UserButton, useUser, useAuth } from "@clerk/nextjs";
 
@@ -300,13 +300,14 @@ export default function Home() {
     }
 
     return (
-      <div className="min-h-screen bg-[#fdfbf7] flex flex-col relative overflow-hidden font-sans text-[#1c1917]">
-        {/* Ambient Background */}
-        <div className="absolute top-[10%] right-[5%] w-[600px] h-[600px] bg-gradient-to-bl from-rose-400/20 via-red-300/10 to-transparent pointer-events-none z-0 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[10%] left-[5%] w-[600px] h-[600px] bg-gradient-to-tr from-red-500/15 via-rose-300/10 to-transparent pointer-events-none z-0 blur-[140px] rounded-full" />
+      <div className="min-h-screen bg-[#fdfbf7] flex flex-col relative overflow-x-hidden font-sans text-[#1c1917] scroll-smooth custom-scrollbar">
+        {/* Ambient Background - Expanded for scrolling */}
+        <div className="fixed top-[0%] right-[0%] w-[800px] h-[800px] bg-gradient-to-bl from-rose-400/20 via-red-300/10 to-transparent pointer-events-none z-0 blur-[150px] rounded-full" />
+        <div className="fixed top-[40%] left-[0%] w-[600px] h-[600px] bg-gradient-to-tr from-red-500/15 via-rose-300/10 to-transparent pointer-events-none z-0 blur-[150px] rounded-full" />
+        <div className="fixed bottom-[-10%] right-[20%] w-[700px] h-[700px] bg-gradient-to-t from-rose-600/10 via-orange-400/5 to-transparent pointer-events-none z-0 blur-[150px] rounded-full" />
 
         {/* Navbar */}
-        <nav className="w-full px-8 py-6 flex items-center justify-between z-10">
+        <nav className="w-full px-8 py-6 flex items-center justify-between z-50 sticky top-0 bg-[#fdfbf7]/80 backdrop-blur-xl border-b border-[#1c1917]/5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-[14px] bg-gradient-to-br from-rose-500 to-red-700 text-white flex items-center justify-center shadow-[0_0_20px_rgba(225,29,72,0.3)]">
               <Command size={20} strokeWidth={2.5} />
@@ -315,51 +316,131 @@ export default function Home() {
           </div>
           <button 
             onClick={() => setShowSignIn(true)}
-            className="px-6 py-2.5 rounded-full bg-white border border-[#1c1917]/10 text-[13px] font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+            className="px-6 py-2.5 rounded-full bg-[#1c1917] text-white text-[13px] font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
           >
             Sign In
           </button>
         </nav>
 
-        {/* Hero Section */}
-        <main className="flex-1 flex flex-col items-center justify-center px-6 z-10 text-center max-w-5xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 text-rose-600 text-[11px] font-bold uppercase tracking-widest mb-8 border border-red-500/20">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-              </span>
-              Mewar University Official
-            </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
-              The Next Generation of <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-red-800">Campus Intelligence.</span>
-            </h1>
-            <p className="text-lg md:text-xl text-[#1c1917]/60 max-w-2xl mx-auto mb-8 font-medium">
-              Experience the smartest, fastest, and most elegant AI assistant ever built for Mewar University. Get instant answers, analyze data, and manage your campus life seamlessly.
-            </p>
-            
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-[#1c1917]/5 shadow-sm text-[13px] font-bold text-zinc-600 hover:scale-105 hover:shadow-md transition-all cursor-default">
-                <ImageIcon size={14} className="text-rose-500" /> Vision AI
+        <main className="w-full flex flex-col z-10 relative">
+          
+          {/* Hero Section */}
+          <section className="min-h-[85vh] flex flex-col items-center justify-center px-6 text-center max-w-5xl mx-auto w-full pt-10 pb-20">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="w-full flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-rose-500/20 text-rose-600 text-[11px] font-bold uppercase tracking-widest mb-10 shadow-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+                Mewar University Official
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-[#1c1917]/5 shadow-sm text-[13px] font-bold text-zinc-600 hover:scale-105 hover:shadow-md transition-all cursor-default">
-                <Brain size={14} className="text-rose-500" /> Advanced Reasoning
+              
+              <h1 className="text-5xl md:text-[5.5rem] font-extrabold tracking-tighter leading-[1.05] mb-8 text-[#1c1917]">
+                The Next Generation of <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-red-600 to-orange-500">Campus Intelligence.</span>
+              </h1>
+              
+              <p className="text-lg md:text-xl text-[#1c1917]/60 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+                Experience the smartest, fastest, and most elegant AI assistant ever built for Mewar University. Get instant answers, identify images, and manage your campus life seamlessly.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+                <button 
+                  onClick={() => setShowSignIn(true)}
+                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-bold shadow-[0_10px_30px_rgba(225,29,72,0.3)] hover:shadow-[0_10px_40px_rgba(225,29,72,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group"
+                >
+                  Start Chatting Free
+                  <ChevronRight size={18} strokeWidth={3} className="transition-transform group-hover:translate-x-1" />
+                </button>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-[#1c1917]/5 shadow-sm text-[13px] font-bold text-zinc-600 hover:scale-105 hover:shadow-md transition-all cursor-default">
-                <Mic size={14} className="text-rose-500" /> Voice Dictation
-              </div>
-            </div>
+            </motion.div>
+          </section>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* Features Grid */}
+          <section className="py-24 px-6 w-full bg-white/40 backdrop-blur-2xl border-y border-[#1c1917]/5 relative">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Supercharge your studies.</h2>
+                <p className="text-[#1c1917]/60 font-medium text-lg max-w-xl mx-auto">Everything you need to excel at Mewar University, wrapped in a beautiful interface.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Card 1 */}
+                <div className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-6 text-rose-500 group-hover:scale-110 transition-transform">
+                    <ImageIcon size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Vision AI</h3>
+                  <p className="text-[#1c1917]/60 leading-relaxed text-[15px]">
+                    Upload assignments, diagrams, or handwritten notes. Our advanced vision models will instantly identify, transcribe, and explain visual content with perfect clarity.
+                  </p>
+                </div>
+
+                {/* Card 2 */}
+                <div className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-6 text-rose-500 group-hover:scale-110 transition-transform">
+                    <Brain size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Advanced Reasoning</h3>
+                  <p className="text-[#1c1917]/60 leading-relaxed text-[15px]">
+                    Tackle complex calculus, write brilliant essays, or debug intricate code. The AI is designed to break down hard problems step-by-step for absolute comprehension.
+                  </p>
+                </div>
+
+                {/* Card 3 */}
+                <div className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-6 text-rose-500 group-hover:scale-110 transition-transform">
+                    <Mic size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Voice Dictation</h3>
+                  <p className="text-[#1c1917]/60 leading-relaxed text-[15px]">
+                    Speak naturally. Dictate long queries or have the assistant read answers back to you with incredibly human-like voices for eyes-free studying.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Social Proof / Stats */}
+          <section className="py-24 px-6 max-w-5xl mx-auto w-full text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div>
+                <h4 className="text-4xl font-extrabold text-[#1c1917] mb-2">99.9%</h4>
+                <p className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Uptime</p>
+              </div>
+              <div>
+                <h4 className="text-4xl font-extrabold text-[#1c1917] mb-2">&lt;2s</h4>
+                <p className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Response Time</p>
+              </div>
+              <div>
+                <h4 className="text-4xl font-extrabold text-[#1c1917] mb-2">24/7</h4>
+                <p className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Availability</p>
+              </div>
+              <div>
+                <h4 className="text-4xl font-extrabold text-[#1c1917] mb-2">100%</h4>
+                <p className="text-sm font-bold text-zinc-500 uppercase tracking-wider">MIU Ready</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Final CTA */}
+          <section className="py-24 px-6 w-full text-center relative overflow-hidden">
+            <div className="max-w-3xl mx-auto relative z-10 p-12 bg-white rounded-[40px] border border-[#1c1917]/5 shadow-2xl shadow-rose-500/10">
+              <Sparkles className="w-12 h-12 text-rose-500 mx-auto mb-6" />
+              <h2 className="text-4xl font-extrabold tracking-tight mb-6">Ready to upgrade your workflow?</h2>
+              <p className="text-[#1c1917]/60 text-lg mb-8 max-w-xl mx-auto font-medium">Join thousands of students and faculty members already using MIU AI to work smarter, not harder.</p>
               <button 
                 onClick={() => setShowSignIn(true)}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-bold shadow-[0_10px_30px_rgba(225,29,72,0.3)] hover:shadow-[0_10px_40px_rgba(225,29,72,0.4)] hover:-translate-y-1 transition-all"
+                className="px-10 py-4 rounded-2xl bg-[#1c1917] text-white font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
               >
-                Get Started Free
+                Create Your Free Account
               </button>
             </div>
-          </motion.div>
+          </section>
+          
+          <footer className="py-8 text-center text-zinc-400 text-sm font-medium border-t border-[#1c1917]/5">
+            &copy; {new Date().getFullYear()} Mewar University. All rights reserved. Designed for excellence.
+          </footer>
         </main>
       </div>
     );

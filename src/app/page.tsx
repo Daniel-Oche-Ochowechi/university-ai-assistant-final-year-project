@@ -164,8 +164,8 @@ export default function Home() {
     <>
       <div className="flex items-center justify-between pb-8 pt-4 px-2">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-white to-zinc-300 text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-            <Command size={20} strokeWidth={2.5} className="text-black" />
+          <div className="w-10 h-10 rounded-[14px] bg-gradient-to-br from-cyan-400 to-blue-600 text-white flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-white/20">
+            <Command size={20} strokeWidth={2.5} className="text-white drop-shadow-md" />
           </div>
           <div>
             <h1 className="font-extrabold text-[15px] leading-none tracking-tight text-white drop-shadow-md">MIU AI Assistant</h1>
@@ -183,9 +183,9 @@ export default function Home() {
 
       <button 
         onClick={() => navigateToChat(null)}
-        className="w-full flex items-center justify-center gap-2 px-4 py-4 mb-8 bg-gradient-to-r from-zinc-100 to-zinc-300 text-black text-[13px] font-bold rounded-2xl transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_4px_30px_rgba(255,255,255,0.25)] hover:scale-[1.02] group active:scale-[0.98]"
+        className="w-full flex items-center justify-center gap-2 px-4 py-4 mb-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[13px] font-bold rounded-2xl transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:shadow-[0_0_30px_rgba(255,255,255,0.08)] hover:scale-[1.02] group active:scale-[0.98] backdrop-blur-md"
       >
-        <Plus size={16} strokeWidth={3} className="text-current transition-transform duration-300 group-hover:rotate-90" />
+        <Plus size={16} strokeWidth={3} className="text-cyan-400 transition-transform duration-300 group-hover:rotate-90 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
         Start New Conversation
       </button>
 
@@ -210,11 +210,11 @@ export default function Home() {
                     }}
                     className={`w-full flex items-center gap-3 px-3 py-3 text-[13px] rounded-xl transition-all duration-300 ${
                       activeChatId === chat.id 
-                        ? "bg-white/[0.08] text-white font-semibold pr-16 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/5" 
+                        ? "bg-cyan-500/10 text-cyan-50 font-semibold pr-16 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-cyan-500/20" 
                         : "text-zinc-500 hover:text-white hover:bg-white/[0.04] pr-16 border border-transparent"
                     }`}
                   >
-                    <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "text-zinc-600 group-hover:text-zinc-400"}`} />
+                    <MessageSquareText size={16} className={`shrink-0 transition-colors ${activeChatId === chat.id ? "text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" : "text-zinc-600 group-hover:text-zinc-400"}`} />
                     
                     {editingChatId === chat.id ? (
                       <input
@@ -259,7 +259,7 @@ export default function Home() {
       </div>
 
       <div className="pt-6 mt-6 pb-4">
-        <div className="bg-[#050505]/40 backdrop-blur-3xl border border-white/[0.05] rounded-[24px] p-4 flex flex-col gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+        <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/[0.08] rounded-[24px] p-4 flex flex-col gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-3">
             <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9" } }} />
             <div className="flex-1 min-w-0">
@@ -290,8 +290,8 @@ export default function Home() {
   if (isLoaded && !user) {
     return (
       <div className="flex bg-black h-screen w-full items-center justify-center relative overflow-hidden">
-        <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-gradient-to-bl from-indigo-500/20 via-purple-500/10 to-transparent pointer-events-none z-0 blur-[100px] rounded-full" />
-        <div className="absolute bottom-[20%] left-[10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 via-cyan-500/10 to-transparent pointer-events-none z-0 blur-[120px] rounded-full" />
+        <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-gradient-to-bl from-cyan-500/20 via-blue-500/10 to-transparent pointer-events-none z-0 blur-[100px] rounded-full" />
+        <div className="absolute bottom-[20%] left-[10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 via-indigo-500/10 to-transparent pointer-events-none z-0 blur-[120px] rounded-full" />
         <SignIn routing="hash" />
       </div>
     );
@@ -302,11 +302,11 @@ export default function Home() {
       <div className="flex w-full h-[100dvh] overflow-hidden bg-[#000000] text-zinc-100 font-sans selection:bg-white/20 relative z-0">
 
           <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-            <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-indigo-500/20 blur-[150px] rounded-full" />
-            <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] bg-purple-500/20 blur-[150px] rounded-full" />
+            <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-cyan-500/10 blur-[150px] rounded-full" />
+            <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] bg-blue-500/10 blur-[150px] rounded-full" />
           </div>
 
-          <aside className="hidden md:flex flex-col w-[320px] border-r border-white/[0.04] bg-[#000000]/40 backdrop-blur-[60px] p-6 shrink-0 z-10 relative shadow-[10px_0_50px_rgba(0,0,0,0.5)]">
+          <aside className="hidden md:flex flex-col w-[320px] border-r border-white/[0.08] bg-black/40 backdrop-blur-[60px] p-6 shrink-0 z-10 relative shadow-[10px_0_50px_rgba(0,0,0,0.5)]">
             <SidebarContent />
           </aside>
 

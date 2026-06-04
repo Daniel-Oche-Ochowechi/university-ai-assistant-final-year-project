@@ -141,9 +141,9 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                    "relative flex items-end gap-2 bg-[#0A0A0A]/80 backdrop-blur-2xl border border-white/[0.08] rounded-[32px] p-2 pl-4 transition-all duration-500 z-10 shadow-2xl",
-                    isFocused ? "border-white/[0.25] shadow-[0_0_40px_rgba(255,255,255,0.06)] bg-[#0C0C0C]" : "",
-                    isRecording ? "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] bg-[#1A0A0A]" : ""
+                    "relative flex items-end gap-2 bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[32px] p-2 pl-4 transition-all duration-500 z-10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-inset ring-white/[0.02]",
+                    isFocused ? "border-cyan-500/30 shadow-[0_0_40px_rgba(34,211,238,0.15)] bg-black/60 ring-cyan-500/20" : "",
+                    isRecording ? "border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.2)] bg-black/60 ring-red-500/20" : ""
                 )}
             >
 
@@ -217,7 +217,7 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                         className={cn(
                             "w-10 h-10 rounded-full transition-all duration-500 flex items-center justify-center relative overflow-hidden group z-20",
                             (input.trim() || imagePreview) && !isLoading
-                                ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:scale-105 active:scale-95"
+                                ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:scale-105 active:scale-95"
                                 : "bg-white/5 text-zinc-600 border border-white/[0.05]"
                         )}
                     >
@@ -232,8 +232,8 @@ export default function ChatInput({ onSendMessage, onClearChat, isLoading }: Cha
                 transition={{ delay: 0.3 }}
                 className="flex items-center justify-center mt-3"
             >
-                <div className="flex items-center gap-1">
-                    <Command size={10} className="text-zinc-400 drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]" />
+                <div className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
+                    <Sparkles size={11} className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
                     <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-zinc-300 to-zinc-500 uppercase tracking-widest pl-1">
                         MIU AI Assistant V2.1
                     </span>

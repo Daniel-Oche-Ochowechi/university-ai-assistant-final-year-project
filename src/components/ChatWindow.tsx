@@ -242,7 +242,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
             <div className="flex-1 flex flex-col min-w-0 border-r border-white/[0.04]">
                 
                 {/* Minimal Header */}
-                <header className="px-5 md:px-8 py-4 border-b border-white/[0.04] bg-[#050505]/80 backdrop-blur-2xl flex items-center justify-between z-20">
+                <header className="px-5 md:px-8 py-4 border-b border-white/[0.04] bg-black/40 backdrop-blur-[40px] flex items-center justify-between z-20">
                     <div className="flex items-center gap-4">
                         {/* Mobile Menu Button */}
                         <button 
@@ -251,12 +251,12 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                         >
                             <Menu size={22} />
                         </button>
-                        <div className="hidden md:flex p-2.5 rounded-xl bg-white/[0.04] border border-white/5">
-                            <Sparkles className="text-white" size={16} />
+                        <div className="hidden md:flex p-2.5 rounded-[14px] bg-gradient-to-br from-cyan-400 to-blue-600 shadow-[0_0_20px_rgba(34,211,238,0.4)] border border-white/20">
+                            <Sparkles className="text-white drop-shadow-md" size={16} />
                         </div>
                         <div>
-                            <h1 className="text-sm font-bold text-white tracking-tight">MIU AI Assistant</h1>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5">Mewar University</p>
+                            <h1 className="text-[15px] font-bold text-white tracking-tight drop-shadow-sm">MIU AI Assistant</h1>
+                            <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mt-0.5 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">Mewar University</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -274,9 +274,9 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                             <motion.div 
                                 initial={{ opacity: 0, x: 10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-[10px] font-bold text-zinc-300 flex items-center gap-2 uppercase tracking-widest backdrop-blur-md"
+                                className="px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400 flex items-center gap-2 uppercase tracking-widest backdrop-blur-md shadow-[0_0_15px_rgba(34,211,238,0.2)]"
                             >
-                                <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                                <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
                                 Processing
                             </motion.div>
                          )}
@@ -313,7 +313,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                     </div>
                 </main>
 
-                <div className="bg-gradient-to-t from-[#050505] via-[#050505] to-transparent pt-10 pb-4 md:pb-6 relative z-10 w-full">
+                <div className="bg-gradient-to-t from-black via-black to-transparent pt-12 pb-4 md:pb-6 relative z-10 w-full">
                     <ChatInput
                         onSendMessage={handleSendMessage}
                         onClearChat={clearChat}

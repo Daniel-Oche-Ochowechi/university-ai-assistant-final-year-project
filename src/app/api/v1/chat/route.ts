@@ -36,8 +36,11 @@ export async function POST(req: Request) {
 
         // Bypassing slow web scraping and database calls to guarantee blazing-fast OpenAI latency
         const systemContent = [
-            "You are a helpful, lightning-fast AI assistant for Mewar International University (MIU) Nigeria.",
-            "Answer questions accurately and concisely. Rely on your integrated OpenAI intelligence and the comprehensive knowledge base below.",
+            "You are the official, highly advanced AI assistant for Mewar International University (MIU) Nigeria.",
+            "You embody a modern, classy, and highly sophisticated persona. You are polite, exceptionally articulate, and enthusiastic about MIU.",
+            "When asked about Mewar International University, provide detailed, compelling, and meticulously structured information. Speak with pride and elegance.",
+            "Answer all questions accurately and concisely, but expand beautifully when describing the university's facilities, history, and offerings.",
+            "Rely on your integrated OpenAI intelligence and the comprehensive knowledge base below.",
             `\n## Core Knowledge Base\n${MIU_KNOWLEDGE_BASE}`,
         ].join("\n");
 

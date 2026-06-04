@@ -86,6 +86,7 @@ export default function Home() {
         .from("user_chats")
         .select("id, title, updated_at")
         .eq("is_hidden", false)
+        .eq("user_id", user.id)
         .order("updated_at", { ascending: false });
       
       if (data) setChats(data);

@@ -6,6 +6,7 @@ import ChatWindow from "@/components/ChatWindow";
 import { Plus, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2, Edit2, Brain, ImageIcon, Mic, Zap, Shield, Sparkles, Globe, Laptop, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SignIn, UserButton, useUser, useAuth } from "@clerk/nextjs";
+import Image from "next/image";
 
 type ChatItem = { id: string; title: string; updated_at: string };
 
@@ -326,9 +327,9 @@ export default function Home() {
         <main className="w-full flex flex-col z-10 relative">
           
           {/* Hero Section */}
-          <section className="min-h-[85vh] flex flex-col items-center justify-center px-6 text-center max-w-5xl mx-auto w-full pt-10 pb-20">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="w-full flex flex-col items-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-rose-500/20 text-rose-600 text-[11px] font-bold uppercase tracking-widest mb-10 shadow-sm">
+          <section className="min-h-[90vh] flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto w-full pt-16 pb-24">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="w-full flex flex-col items-center z-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-rose-500/20 text-rose-600 text-[11px] font-bold uppercase tracking-widest mb-10 shadow-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
@@ -336,68 +337,89 @@ export default function Home() {
                 Mewar University Official
               </div>
               
-              <h1 className="text-5xl md:text-[5.5rem] font-extrabold tracking-tighter leading-[1.05] mb-8 text-[#1c1917]">
+              <h1 className="text-5xl md:text-[6rem] font-extrabold tracking-tighter leading-[1.05] mb-8 text-[#1c1917]">
                 The Next Generation of <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-red-600 to-orange-500">Campus Intelligence.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-red-600 to-orange-500 drop-shadow-sm">Campus Intelligence.</span>
               </h1>
               
-              <p className="text-lg md:text-xl text-[#1c1917]/60 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+              <p className="text-lg md:text-xl text-[#1c1917]/70 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
                 Experience the smartest, fastest, and most elegant AI assistant ever built for Mewar University. Get instant answers, identify images, and manage your campus life seamlessly.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16">
                 <button 
                   onClick={() => setShowSignIn(true)}
-                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-bold shadow-[0_10px_30px_rgba(225,29,72,0.3)] hover:shadow-[0_10px_40px_rgba(225,29,72,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group"
+                  className="w-full sm:w-auto px-10 py-4 rounded-[20px] bg-gradient-to-r from-rose-600 to-red-700 text-white font-bold text-lg shadow-[0_15px_40px_rgba(225,29,72,0.3)] hover:shadow-[0_20px_50px_rgba(225,29,72,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group"
                 >
                   Start Chatting Free
-                  <ChevronRight size={18} strokeWidth={3} className="transition-transform group-hover:translate-x-1" />
+                  <ChevronRight size={20} strokeWidth={3} className="transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
+            </motion.div>
+
+            {/* Hero Image */}
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+              className="relative w-full max-w-5xl mx-auto rounded-[40px] overflow-hidden shadow-2xl border border-white/20 bg-white/50 backdrop-blur-3xl z-10"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#fdfbf7]/80 z-10 pointer-events-none" />
+              <Image 
+                src="/assets/miu_hero.png" 
+                alt="MIU AI Assistant Interface" 
+                width={1200} 
+                height={600} 
+                className="w-full h-auto object-cover hover:scale-105 transition-transform duration-[2s] ease-out"
+                priority
+              />
             </motion.div>
           </section>
 
           {/* Features Grid */}
-          <section className="py-24 px-6 w-full bg-white/40 backdrop-blur-2xl border-y border-[#1c1917]/5 relative">
+          <section className="py-32 px-6 w-full bg-white/60 backdrop-blur-3xl border-y border-[#1c1917]/5 relative z-20">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Supercharge your studies.</h2>
-                <p className="text-[#1c1917]/60 font-medium text-lg max-w-xl mx-auto">Everything you need to excel at Mewar University, wrapped in a beautiful interface.</p>
+              <div className="text-center mb-20">
+                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">Supercharge your studies.</h2>
+                <p className="text-[#1c1917]/60 font-medium text-xl max-w-2xl mx-auto">Everything you need to excel at Mewar University, wrapped in a breathtakingly fast interface.</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Card 1 */}
-                <div className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-6 text-rose-500 group-hover:scale-110 transition-transform">
-                    <ImageIcon size={24} />
+                <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }} className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-lg hover:shadow-2xl transition-shadow duration-300 group overflow-hidden relative">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500" />
+                  <div className="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-8 text-rose-500 group-hover:scale-110 transition-transform relative overflow-hidden">
+                    <Image src="/assets/vision_ai.png" alt="Vision AI" layout="fill" objectFit="cover" className="opacity-80 mix-blend-multiply" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3">Vision AI</h3>
-                  <p className="text-[#1c1917]/60 leading-relaxed text-[15px]">
+                  <h3 className="text-2xl font-bold mb-4 relative z-10">Vision AI</h3>
+                  <p className="text-[#1c1917]/70 leading-relaxed text-[16px] relative z-10 font-medium">
                     Upload assignments, diagrams, or handwritten notes. Our advanced vision models will instantly identify, transcribe, and explain visual content with perfect clarity.
                   </p>
-                </div>
+                </motion.div>
 
                 {/* Card 2 */}
-                <div className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-6 text-rose-500 group-hover:scale-110 transition-transform">
-                    <Brain size={24} />
+                <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }} className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-lg hover:shadow-2xl transition-shadow duration-300 group overflow-hidden relative">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500" />
+                  <div className="w-16 h-16 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center mb-8 text-red-500 group-hover:scale-110 transition-transform relative overflow-hidden">
+                    <Image src="/assets/reasoning_ai.png" alt="Advanced Reasoning" layout="fill" objectFit="cover" className="opacity-80 mix-blend-multiply" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3">Advanced Reasoning</h3>
-                  <p className="text-[#1c1917]/60 leading-relaxed text-[15px]">
+                  <h3 className="text-2xl font-bold mb-4 relative z-10">Advanced Reasoning</h3>
+                  <p className="text-[#1c1917]/70 leading-relaxed text-[16px] relative z-10 font-medium">
                     Tackle complex calculus, write brilliant essays, or debug intricate code. The AI is designed to break down hard problems step-by-step for absolute comprehension.
                   </p>
-                </div>
+                </motion.div>
 
                 {/* Card 3 */}
-                <div className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-6 text-rose-500 group-hover:scale-110 transition-transform">
-                    <Mic size={24} />
+                <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }} className="p-8 rounded-[32px] bg-white border border-[#1c1917]/5 shadow-lg hover:shadow-2xl transition-shadow duration-300 group overflow-hidden relative">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500" />
+                  <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center mb-8 text-orange-500 group-hover:scale-110 transition-transform relative overflow-hidden">
+                    <Image src="/assets/voice_ai.png" alt="Voice Dictation" layout="fill" objectFit="cover" className="opacity-80 mix-blend-multiply" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3">Voice Dictation</h3>
-                  <p className="text-[#1c1917]/60 leading-relaxed text-[15px]">
-                    Speak naturally. Dictate long queries or have the assistant read answers back to you with incredibly human-like voices for eyes-free studying.
+                  <h3 className="text-2xl font-bold mb-4 relative z-10">Voice Dictation</h3>
+                  <p className="text-[#1c1917]/70 leading-relaxed text-[16px] relative z-10 font-medium">
+                    Speak naturally. Dictate long queries or have the assistant read answers back to you with incredibly human-like voices for effortless eyes-free studying.
                   </p>
-                </div>
+                </motion.div>
               </div>
             </div>
           </section>

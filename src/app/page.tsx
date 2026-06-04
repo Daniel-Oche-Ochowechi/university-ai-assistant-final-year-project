@@ -327,7 +327,66 @@ export default function Home() {
         <main className="w-full flex flex-col z-10 relative">
           
           {/* Hero Section */}
-          <section className="min-h-[90vh] flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto w-full pt-16 pb-24">
+          <section className="min-h-[90vh] flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto w-full pt-16 pb-24 relative overflow-visible">
+            
+            {/* Animated SVG Lines */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-40 mix-blend-multiply flex items-center justify-center">
+              <svg className="w-full h-[150%] absolute" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <motion.path 
+                  d="M -10,30 Q 30,50 50,20 T 110,40"
+                  stroke="url(#roseGradient)" 
+                  strokeWidth="0.2"
+                  fill="none"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+                  transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
+                />
+                <motion.path 
+                  d="M -10,60 Q 40,80 60,30 T 110,70"
+                  stroke="url(#redGradient)" 
+                  strokeWidth="0.3"
+                  fill="none"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+                  transition={{ duration: 8, ease: "easeInOut", repeat: Infinity, delay: 2 }}
+                />
+                <motion.path 
+                  d="M 20,-10 Q 40,40 20,80 T 80,110"
+                  stroke="url(#orangeGradient)" 
+                  strokeWidth="0.15"
+                  fill="none"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+                  transition={{ duration: 7, ease: "easeInOut", repeat: Infinity, delay: 1 }}
+                />
+                <motion.path 
+                  d="M 80,-10 Q 60,40 90,70 T 30,110"
+                  stroke="url(#roseGradient)" 
+                  strokeWidth="0.1"
+                  fill="none"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+                  transition={{ duration: 9, ease: "easeInOut", repeat: Infinity, delay: 3 }}
+                />
+                <defs>
+                  <linearGradient id="roseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#e11d48" stopOpacity="0" />
+                    <stop offset="50%" stopColor="#e11d48" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#e11d48" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#dc2626" stopOpacity="0" />
+                    <stop offset="50%" stopColor="#dc2626" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#dc2626" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ea580c" stopOpacity="0" />
+                    <stop offset="50%" stopColor="#ea580c" stopOpacity="0.6" />
+                    <stop offset="100%" stopColor="#ea580c" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="w-full flex flex-col items-center z-10">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-rose-500/20 text-rose-600 text-[11px] font-bold uppercase tracking-widest mb-10 shadow-sm">
                 <span className="relative flex h-2 w-2">

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useClerkSupabaseClient } from "@/lib/supabase";
 import ChatWindow from "@/components/ChatWindow";
-import { Plus, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2, Edit2 } from "lucide-react";
+import { Plus, Loader2, Command, X, MessageSquareText, Code, Check, Key, Trash2, Edit2, Brain, ImageIcon, Mic } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SignIn, UserButton, useUser, useAuth } from "@clerk/nextjs";
 
@@ -335,9 +335,22 @@ export default function Home() {
               The Next Generation of <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-red-800">Campus Intelligence.</span>
             </h1>
-            <p className="text-lg md:text-xl text-[#1c1917]/60 max-w-2xl mx-auto mb-10 font-medium">
+            <p className="text-lg md:text-xl text-[#1c1917]/60 max-w-2xl mx-auto mb-8 font-medium">
               Experience the smartest, fastest, and most elegant AI assistant ever built for Mewar University. Get instant answers, analyze data, and manage your campus life seamlessly.
             </p>
+            
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-[#1c1917]/5 shadow-sm text-[13px] font-bold text-zinc-600 hover:scale-105 hover:shadow-md transition-all cursor-default">
+                <ImageIcon size={14} className="text-rose-500" /> Vision AI
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-[#1c1917]/5 shadow-sm text-[13px] font-bold text-zinc-600 hover:scale-105 hover:shadow-md transition-all cursor-default">
+                <Brain size={14} className="text-rose-500" /> Advanced Reasoning
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-[#1c1917]/5 shadow-sm text-[13px] font-bold text-zinc-600 hover:scale-105 hover:shadow-md transition-all cursor-default">
+                <Mic size={14} className="text-rose-500" /> Voice Dictation
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button 
                 onClick={() => setShowSignIn(true)}

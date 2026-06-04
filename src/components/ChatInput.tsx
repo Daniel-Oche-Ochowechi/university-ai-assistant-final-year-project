@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Eraser, Command, Image as ImageIcon, Mic, MicOff, X } from "lucide-react";
+import { ArrowUp, Eraser, Command, Sparkles, Image as ImageIcon, Mic, MicOff, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 

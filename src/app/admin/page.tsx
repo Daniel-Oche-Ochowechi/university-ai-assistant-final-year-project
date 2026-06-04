@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { motion } from "framer-motion";
-import { Users, MessageSquareText, Activity, Key, Loader2, Database, ShieldAlert, ChevronLeft, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Users, MessageSquareText, Activity, Key, Loader2, Database, ShieldAlert, ChevronLeft, Search, Lock, Unlock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 type ChatData = {
@@ -28,33 +28,146 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Admin Login State
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [passcode, setPasscode] = useState("");
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [authError, setAuthError] = useState("");
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuthenticating(true);
+    setAuthError("");
+
+    try {
+      const res = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passcode }),
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setIsUnlocked(true);
+        fetchStats();
+      } else {
+        setAuthError(data.error || "Invalid passcode");
+      }
+    } catch (err: any) {
+      setAuthError("Failed to connect to authentication server.");
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/admin/stats");
+      if (!res.ok) {
+        throw new Error("Failed to fetch admin stats. Ensure SUPABASE_SERVICE_ROLE_KEY is configured.");
+      }
+      const data = await res.json();
+      setStats(data.stats);
+      setRecentChats(data.recentChats);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!isLoaded || !user) return;
+    // Check if session storage has the unlock flag already
+    const unlocked = sessionStorage.getItem("adminUnlocked");
+    if (unlocked === "true") {
+      setIsUnlocked(true);
+    }
+  }, []);
 
-    const fetchStats = async () => {
-      try {
-        const res = await fetch("/api/admin/stats");
-        if (!res.ok) {
-          throw new Error("Failed to fetch admin stats. Ensure SUPABASE_SERVICE_ROLE_KEY is configured.");
-        }
-        const data = await res.json();
-        setStats(data.stats);
-        setRecentChats(data.recentChats);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  useEffect(() => {
+    if (isUnlocked && isLoaded && user) {
+      fetchStats();
+      sessionStorage.setItem("adminUnlocked", "true");
+    }
+  }, [isUnlocked, user, isLoaded]);
 
-    fetchStats();
-  }, [user, isLoaded]);
-
-  if (!isLoaded || isLoading) {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen bg-[#fdfbf7] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-rose-500" />
+      </div>
+    );
+  }
+
+  // --- ADMIN LOGIN SCREEN ---
+  if (!isUnlocked) {
+    return (
+      <div className="min-h-screen bg-[#fdfbf7] flex items-center justify-center relative overflow-hidden font-sans text-[#1c1917]">
+        {/* Ambient background for login */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-rose-400/20 via-red-300/10 to-transparent blur-[120px] rounded-full pointer-events-none" />
+        
+        <Link href="/" className="absolute top-8 left-8 p-3 rounded-full bg-white/50 hover:bg-white text-zinc-500 hover:text-[#1c1917] transition-all shadow-sm flex items-center gap-2">
+          <ChevronLeft size={18} />
+          <span className="text-sm font-bold">Return Home</span>
+        </Link>
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+          animate={{ opacity: 1, scale: 1, y: 0 }} 
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="relative z-10 w-full max-w-md bg-white/80 backdrop-blur-2xl p-10 rounded-[40px] border border-white shadow-2xl shadow-rose-500/10 text-center"
+        >
+          <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-rose-50 to-red-50 text-rose-600 flex items-center justify-center mx-auto mb-6 shadow-inner border border-rose-100">
+            <Lock size={28} />
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight mb-2">Restricted Access</h1>
+          <p className="text-zinc-500 text-sm font-medium mb-8">Enter the master passcode to access the System Intelligence Dashboard.</p>
+
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            <div className="relative">
+              <input 
+                type="password" 
+                value={passcode}
+                onChange={(e) => setPasscode(e.target.value)}
+                placeholder="Enter passcode..." 
+                className="w-full bg-[#fdfbf7] border border-zinc-200 rounded-2xl py-4 px-5 pr-14 text-center font-mono tracking-widest focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all text-lg shadow-inner"
+                autoFocus
+              />
+              <button 
+                type="submit" 
+                disabled={isAuthenticating || !passcode}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-[#1c1917] text-white hover:bg-rose-600 transition-colors disabled:opacity-50 disabled:hover:bg-[#1c1917]"
+              >
+                {isAuthenticating ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}
+              </button>
+            </div>
+            
+            <AnimatePresence>
+              {authError && (
+                <motion.p 
+                  initial={{ opacity: 0, y: -10 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0 }}
+                  className="text-red-500 text-sm font-bold"
+                >
+                  {authError}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // --- MAIN DASHBOARD SCREEN ---
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fdfbf7] flex flex-col items-center justify-center">
+        <Unlock className="w-10 h-10 text-rose-500 mb-4 animate-pulse" />
+        <p className="text-zinc-500 font-bold tracking-widest uppercase text-xs">Authenticating & Loading Data...</p>
       </div>
     );
   }
@@ -63,11 +176,16 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-[#fdfbf7] flex flex-col items-center justify-center p-6 text-center">
         <ShieldAlert className="w-16 h-16 text-red-500 mb-4" />
-        <h1 className="text-2xl font-bold text-[#1c1917] mb-2">Access Denied or Error</h1>
+        <h1 className="text-2xl font-bold text-[#1c1917] mb-2">System Error</h1>
         <p className="text-zinc-500 max-w-md">{error}</p>
-        <Link href="/" className="mt-8 px-6 py-2 bg-rose-600 text-white rounded-full font-bold hover:bg-rose-700 transition-colors">
-          Return to Home
-        </Link>
+        <div className="flex gap-4 mt-8">
+          <button onClick={fetchStats} className="px-6 py-2 bg-[#1c1917] text-white rounded-full font-bold hover:bg-zinc-800 transition-colors">
+            Retry
+          </button>
+          <button onClick={() => { setIsUnlocked(false); sessionStorage.removeItem("adminUnlocked"); }} className="px-6 py-2 bg-red-100 text-red-600 rounded-full font-bold hover:bg-red-200 transition-colors">
+            Logout
+          </button>
+        </div>
       </div>
     );
   }
@@ -78,7 +196,7 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#fdfbf7] text-[#1c1917] font-sans selection:bg-rose-500/20">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }} className="min-h-screen bg-[#fdfbf7] text-[#1c1917] font-sans selection:bg-rose-500/20">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-[#1c1917]/5 shadow-sm px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -90,8 +208,18 @@ export default function AdminDashboard() {
           </div>
           <h1 className="font-extrabold text-[18px] tracking-tight">System Intelligence Dashboard</h1>
         </div>
-        <div className="text-[11px] font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-100 uppercase tracking-widest">
-          Admin Mode Active
+        <div className="flex items-center gap-4">
+          <div className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 uppercase tracking-widest flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Admin Authenticated
+          </div>
+          <button 
+            onClick={() => { setIsUnlocked(false); sessionStorage.removeItem("adminUnlocked"); }}
+            className="p-2 rounded-full hover:bg-red-50 text-red-500 transition-colors tooltip"
+            title="Lock Dashboard"
+          >
+            <Lock size={18} />
+          </button>
         </div>
       </header>
 
@@ -146,7 +274,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           
-          <div className="bg-white border border-[#1c1917]/10 rounded-3xl overflow-hidden shadow-sm">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-white border border-[#1c1917]/10 rounded-3xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -191,11 +319,11 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-zinc-50 px-6 py-4 border-t border-[#1c1917]/5 text-xs text-zinc-500 flex justify-between items-center">
               <span>Showing {filteredChats.length} records</span>
-              <span>Data fetched in real-time</span>
+              <span>Data fetched in real-time directly from Database</span>
             </div>
-          </div>
+          </motion.div>
         </section>
       </main>
-    </div>
+    </motion.div>
   );
 }

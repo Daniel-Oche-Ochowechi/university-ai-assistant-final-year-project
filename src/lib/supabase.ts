@@ -5,6 +5,7 @@ import { useMemo } from "react";
 // Pulling securely from environment variables only
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://dummy-url-for-build.supabase.co";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "dummy-key-for-build";
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "dummy-key-for-build";
 
 export function useClerkSupabaseClient() {
   const { getToken } = useAuth();
@@ -27,3 +28,6 @@ export function useClerkSupabaseClient() {
 
 // Still exposing standard client for API routes or anonymous Server Actions
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Expose admin client for secure backend operations that bypass RLS
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);

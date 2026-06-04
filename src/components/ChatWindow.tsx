@@ -66,6 +66,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
         const fetchChat = async () => {
             const { data } = await supabase.from('user_chats').select('messages').eq('id', chatId).single();
             if (data && data.messages) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const parsedMessages = data.messages.map((m: any) => ({
                     ...m,
                     timestamp: m.timestamp ? new Date(m.timestamp) : undefined
@@ -209,6 +210,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                 window.speechSynthesis.speak(utterance);
             }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             if (error.name === 'AbortError' || error.message?.includes('aborted')) {
                 // Silently swallow abort errors caused by user navigation/chat switching
@@ -294,6 +296,7 @@ export default function ChatWindow({ chatId, onChatCreated, userId, onMenuToggle
                                 {messages.filter(msg => msg.role !== "system" && msg.role !== "tool").map((msg, index) => (
                                     <MessageBubble
                                         key={index}
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                         role={msg.role as any}
                                         content={msg.content}
                                         imageUrl={msg.imageUrl}

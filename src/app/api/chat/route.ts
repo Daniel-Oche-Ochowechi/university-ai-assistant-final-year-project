@@ -5,7 +5,7 @@ import { MIU_KNOWLEDGE_BASE } from "@/lib/knowledge-base";
 export const runtime = "nodejs";
 
 export async function GET() {
-    return Response.json({ status: "API is active", model: "OpenAI GPT-4o-mini" });
+    return Response.json({ status: "API is active", model: "OpenAI GPT-4o" });
 }
 
 export async function POST(req: Request) {
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
 
         // 3. SINGLE ROUTING LOGIC via OPENAI
         const stream = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-4o",
             messages: apiMessages,
             temperature: 0.7,
             stream: true,

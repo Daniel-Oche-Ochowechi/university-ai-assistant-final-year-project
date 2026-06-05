@@ -66,7 +66,7 @@ export async function POST(req: Request) {
         if (!stream) {
             // Standard JSON response
             const completion = await openai.chat.completions.create({
-                model: "gpt-4o-mini",
+                model: "gpt-4o",
                 messages: apiMessages,
                 temperature: 0.7,
                 stream: false,
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
         } else {
             // Server-Sent Events (SSE) stream response
             const streamCompletion = await openai.chat.completions.create({
-                model: "gpt-4o-mini",
+                model: "gpt-4o",
                 messages: apiMessages,
                 temperature: 0.7,
                 stream: true,
